@@ -2,6 +2,7 @@ from pathlib import Path
 import hashlib, json
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
@@ -18,6 +19,11 @@ for nome, (modelo, Xtr, Xte) in modelos.items():
     modelo.fit(Xtr,ytr); pred=modelo.predict(Xte); cm=confusion_matrix(yte,pred)
     (saida / f"{nome}_classification_report.txt").write_text(classification_report(yte,pred,target_names=["Em dia (0)","Inadimplente (1)"],digits=4))
     pd.DataFrame(cm,index=["Real 0","Real 1"],columns=["Previsto 0","Previsto 1"]).to_csv(saida / f"{nome}_matriz_confusao.csv")
+    fig, ax = plt.subplots(figsize=(5,4)); im = ax.imshow(cm, cmap="Blues"); fig.colorbar(im, ax=ax)
+    ax.set_xticks([0,1], ["Previsto 0", "Previsto 1"]); ax.set_yticks([0,1], ["Real 0", "Real 1"]); ax.set_title(f"Matriz de confusão — {nome}")
+    for i in range(2):
+        for j in range(2): ax.text(j, i, cm[i,j], ha="center", va="center")
+    fig.tight_layout(); fig.savefig(saida / f"{nome}_matriz_confusao.svg"); plt.close(fig)
     tn,fp,fn,tp=cm.ravel(); resumo.append({"modelo":nome,"acuracia":accuracy_score(yte,pred),"precisao_1":precision_score(yte,pred,zero_division=0),"recall_1":recall_score(yte,pred,zero_division=0),"f1_1":f1_score(yte,pred,zero_division=0),"falsos_positivos":int(fp),"falsos_negativos":int(fn)})
 df=pd.DataFrame(resumo); df.to_csv(saida / "comparacao_final.csv",index=False)
 knn=df[df.modelo=="knn_k3"].iloc[0]; arv=df[df.modelo=="arvore_depth7"].iloc[0]
