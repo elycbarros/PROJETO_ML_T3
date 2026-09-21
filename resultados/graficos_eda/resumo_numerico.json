@@ -1,0 +1,9 @@
+{
+  "percentual_inadimplencia": 21.82,
+  "renda_mediana_em_dia": 60000.0,
+  "renda_mediana_inadimplente": 41498.0,
+  "comprometimento_mediano_em_dia": 0.13,
+  "comprometimento_mediano_inadimplente": 0.24,
+  "correlacao_status_comprometimento": 0.379,
+  "correlacao_status_taxa_juros": 0.335
+}

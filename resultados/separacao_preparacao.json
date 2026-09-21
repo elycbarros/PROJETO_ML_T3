@@ -1,0 +1,27 @@
+{
+  "random_state": 42,
+  "test_size": 0.2,
+  "features_originais": 11,
+  "treino_antes_balanceamento": 25928,
+  "teste": 6483,
+  "treino_classes_antes": {
+    "0": 20257,
+    "1": 5671
+  },
+  "treino_classes_depois": {
+    "0": 20257,
+    "1": 20257
+  },
+  "teste_classes_mantidas": {
+    "0": 5065,
+    "1": 1418
+  },
+  "dimensao_knn": [
+    26,
+    26
+  ],
+  "dimensao_arvore": [
+    26,
+    26
+  ]
+}
