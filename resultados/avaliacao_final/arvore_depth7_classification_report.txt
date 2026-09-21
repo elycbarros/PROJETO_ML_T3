@@ -1,8 +1,8 @@
                   precision    recall  f1-score   support
 
-      Em dia (0)     0.9238    0.9627    0.9429      5065
-Inadimplente (1)     0.8432    0.7165    0.7747      1418
+      Em dia (0)     0.9335    0.9169    0.9251      5065
+Inadimplente (1)     0.7208    0.7666    0.7430      1418
 
-        accuracy                         0.9088      6483
-       macro avg     0.8835    0.8396    0.8588      6483
-    weighted avg     0.9062    0.9088    0.9061      6483
+        accuracy                         0.8840      6483
+       macro avg     0.8271    0.8417    0.8340      6483
+    weighted avg     0.8870    0.8840    0.8853      6483

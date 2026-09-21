@@ -8,7 +8,7 @@ O objetivo é comparar dois modelos para prever `loan_status`: 1 indica inadimpl
 
 A base possui 32.581 registros originais, dos quais 21,82% representam inadimplência. A preparação removeu 165 duplicatas e 5 registros com idade acima de 100 anos somente em arquivos derivados. Os nulos de tempo de emprego e taxa de juros foram imputados por mediana dentro do treino.
 
-Após a validação corrigida, o KNN com `K=3` teve F1 de 0,648 no teste e a Árvore com `max_depth=7` teve F1 de 0,743, acurácia de 0,884 e precisão de 0,721. O modelo recomendado preliminarmente é a Árvore de Decisão. A decisão deve ser recalibrada com custos reais de falsos positivos e falsos negativos antes de qualquer uso operacional.
+Após a validação corrigida, o KNN com `K=3` teve F1 de 0,647 no teste e a Árvore com `max_depth=7` teve F1 de 0,743, acurácia de 0,884, precisão de 0,721 e recall de 0,767. O modelo recomendado preliminarmente é a Árvore de Decisão. A decisão deve ser recalibrada com custos reais de falsos positivos e falsos negativos antes de qualquer uso operacional.
 
 ## Dados originais
 
@@ -25,8 +25,8 @@ Fonte da base de crédito: https://drive.google.com/file/d/12vm4oQEeH7ZqB6glXEPp
 - `notebooks/05_separacao_preparacao.py`: split, imputação, encoding, balanceamento e escala.
 - `notebooks/06_experimentos_knn.py`: quatro valores de K.
 - `notebooks/07_experimentos_arvore.py`: quatro profundidades da árvore.
-- `notebooks/08_avaliacao_final.py`: relatórios, matrizes e veredito.
-- `notebooks/09_validacao_corrigida.py`: reexecução sem vazamento na validação cruzada; este é o resultado vigente.
+- `notebooks/08_avaliacao_final.py`: relatórios e matrizes históricos.
+- `notebooks/09_validacao_corrigida.py`: reexecução sem vazamento na validação cruzada e geração dos artefatos vigentes.
 - `documentacao/dicionario_dados.md`: dicionário e resumo do inventário da base de crédito.
 - `documentacao/eda_graficos.md`: interpretações da análise exploratória.
 - `documentacao/data_prep.md`: política de limpeza e consistência.
@@ -39,18 +39,18 @@ Fonte da base de crédito: https://drive.google.com/file/d/12vm4oQEeH7ZqB6glXEPp
 
 ## Reprodução
 
-Com Python e as dependências instaladas, executar a partir da raiz, nesta ordem:
+Com Python e as dependências instaladas (`scikit-learn`, `pandas`, `numpy`, `matplotlib`), executar a partir da raiz:
 
 ```text
 # Abrir notebooks/01_inspecao_inicial.ipynb e executar as células
-python notebooks/02_eda_graficos.py
-python notebooks/03_data_prep_diagnostico.py
-python notebooks/04_feature_engineering.py
-python notebooks/05_separacao_preparacao.py
-python notebooks/06_experimentos_knn.py
-python notebooks/07_experimentos_arvore.py
-python notebooks/08_avaliacao_final.py
-python notebooks/09_validacao_corrigida.py
+python3 notebooks/02_eda_graficos.py
+python3 notebooks/03_data_prep_diagnostico.py
+python3 notebooks/04_feature_engineering.py
+python3 notebooks/05_separacao_preparacao.py
+python3 notebooks/06_experimentos_knn.py
+python3 notebooks/07_experimentos_arvore.py
+python3 notebooks/08_avaliacao_final.py
+python3 notebooks/09_validacao_corrigida.py
 ```
 
 Os scripts sempre conferem os hashes dos arquivos de entrada. Os CSVs originais não são sobrescritos; resultados transformados ficam em `dados_derivados/` e tabelas, gráficos e relatórios em `resultados/` e `documentacao/`. Os resultados de `06_experimentos_knn.py` e `07_experimentos_arvore.py` são históricos; `09_validacao_corrigida.py` é a execução metodologicamente válida.
