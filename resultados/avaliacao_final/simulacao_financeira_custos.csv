@@ -1,0 +1,3 @@
+Modelo,Falsos Positivos,Falsos Negativos,Custo FP (R$),Custo FN (R$),Custo Total (R$)
+KNN (K=3),756,379,756000,1895000,2651000
+Árvore (depth=7),421,331,421000,1655000,2076000

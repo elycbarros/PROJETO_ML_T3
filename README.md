@@ -27,6 +27,8 @@ Fonte da base de crédito: https://drive.google.com/file/d/12vm4oQEeH7ZqB6glXEPp
 - `notebooks/07_experimentos_arvore.py`: quatro profundidades da árvore.
 - `notebooks/08_avaliacao_final.py`: relatórios e matrizes históricos.
 - `notebooks/09_validacao_corrigida.py`: reexecução sem vazamento na validação cruzada e geração dos artefatos vigentes.
+- `notebooks/10_graficos_complementares.py`: geração de curvas de overfitting, validação do KNN, feature importance e simulação financeira.
+- `notebooks/pipeline_completo.ipynb`: notebook interativo consolidado com todo o pipeline executado e gráficos renderizados.
 - `documentacao/dicionario_dados.md`: dicionário e resumo do inventário da base de crédito.
 - `documentacao/eda_graficos.md`: interpretações da análise exploratória.
 - `documentacao/data_prep.md`: política de limpeza e consistência.
@@ -51,6 +53,7 @@ python3 notebooks/06_experimentos_knn.py
 python3 notebooks/07_experimentos_arvore.py
 python3 notebooks/08_avaliacao_final.py
 python3 notebooks/09_validacao_corrigida.py
+python3 notebooks/10_graficos_complementares.py
 ```
 
 Os scripts sempre conferem os hashes dos arquivos de entrada. Os CSVs originais não são sobrescritos; resultados transformados ficam em `dados_derivados/` e tabelas, gráficos e relatórios em `resultados/` e `documentacao/`. Os resultados de `06_experimentos_knn.py` e `07_experimentos_arvore.py` são históricos; `09_validacao_corrigida.py` é a execução metodologicamente válida.
