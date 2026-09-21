@@ -17,6 +17,7 @@ Fonte da base de crédito: https://drive.google.com/file/d/12vm4oQEeH7ZqB6glXEPp
 ## Organização
 
 - `notebooks/01_inspecao_inicial.ipynb`: inventário e verificações da base original.
+- `documentacao/dicionario_dados.md`: dicionário e resumo do inventário da base de crédito.
 - `documentacao/plano.md`: critérios de conclusão e decisões pendentes.
 - `dados_derivados/`: arquivos transformados, quando necessários.
 - `resultados/`: tabelas e gráficos produzidos durante o projeto.
