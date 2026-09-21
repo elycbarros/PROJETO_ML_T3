@@ -1,0 +1,8 @@
+                  precision    recall  f1-score   support
+
+      Em dia (0)     0.9173    0.8344    0.8739      5065
+Inadimplente (1)     0.5528    0.7313    0.6296      1418
+
+        accuracy                         0.8118      6483
+       macro avg     0.7350    0.7828    0.7517      6483
+    weighted avg     0.8376    0.8118    0.8204      6483
