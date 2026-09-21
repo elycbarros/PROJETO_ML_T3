@@ -8,7 +8,7 @@ O objetivo é comparar dois modelos para prever `loan_status`: 1 indica inadimpl
 
 A base possui 32.581 registros originais, dos quais 21,82% representam inadimplência. A preparação removeu 165 duplicatas e 5 registros com idade acima de 100 anos somente em arquivos derivados. Os nulos de tempo de emprego e taxa de juros foram imputados por mediana dentro do treino.
 
-Foram comparados KNN e Árvore de Decisão. No teste original, o KNN com `K=3` teve F1 de 0,630 para a classe inadimplente; a Árvore com `max_depth=7` teve F1 de 0,775, acurácia de 0,909 e precisão de 0,843. O modelo recomendado para um piloto controlado é a Árvore de Decisão. A decisão deve ser recalibrada com custos reais de falsos positivos e falsos negativos antes de qualquer uso operacional.
+Após a validação corrigida, o KNN com `K=3` teve F1 de 0,648 no teste e a Árvore com `max_depth=7` teve F1 de 0,743, acurácia de 0,884 e precisão de 0,721. O modelo recomendado preliminarmente é a Árvore de Decisão. A decisão deve ser recalibrada com custos reais de falsos positivos e falsos negativos antes de qualquer uso operacional.
 
 ## Dados originais
 
@@ -26,6 +26,7 @@ Fonte da base de crédito: https://drive.google.com/file/d/12vm4oQEeH7ZqB6glXEPp
 - `notebooks/06_experimentos_knn.py`: quatro valores de K.
 - `notebooks/07_experimentos_arvore.py`: quatro profundidades da árvore.
 - `notebooks/08_avaliacao_final.py`: relatórios, matrizes e veredito.
+- `notebooks/09_validacao_corrigida.py`: reexecução sem vazamento na validação cruzada; este é o resultado vigente.
 - `documentacao/dicionario_dados.md`: dicionário e resumo do inventário da base de crédito.
 - `documentacao/eda_graficos.md`: interpretações da análise exploratória.
 - `documentacao/data_prep.md`: política de limpeza e consistência.
@@ -49,9 +50,10 @@ python notebooks/05_separacao_preparacao.py
 python notebooks/06_experimentos_knn.py
 python notebooks/07_experimentos_arvore.py
 python notebooks/08_avaliacao_final.py
+python notebooks/09_validacao_corrigida.py
 ```
 
-Os scripts sempre conferem os hashes dos arquivos de entrada. Os CSVs originais não são sobrescritos; resultados transformados ficam em `dados_derivados/` e tabelas, gráficos e relatórios em `resultados/` e `documentacao/`.
+Os scripts sempre conferem os hashes dos arquivos de entrada. Os CSVs originais não são sobrescritos; resultados transformados ficam em `dados_derivados/` e tabelas, gráficos e relatórios em `resultados/` e `documentacao/`. Os resultados de `06_experimentos_knn.py` e `07_experimentos_arvore.py` são históricos; `09_validacao_corrigida.py` é a execução metodologicamente válida.
 
 ## Limitações
 

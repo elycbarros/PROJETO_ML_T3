@@ -1,6 +1,6 @@
 # Avaliação final e veredito de negócio
 
-Foram comparados KNN (`K=3`) e Árvore de Decisão (`max_depth=7`) no teste original, sem reamostragem.
+Este relatório registra a avaliação anterior e está **superado** pela validação corrigida em `resultados/avaliacao_corrigida.csv`. A execução vigente é `notebooks/09_validacao_corrigida.py`, que ajusta preparação e balanceamento dentro de cada dobra.
 
 | Modelo | Acurácia | Precisão 1 | Recall 1 | F1 1 | FP | FN |
 |---|---:|---:|---:|---:|---:|---:|
