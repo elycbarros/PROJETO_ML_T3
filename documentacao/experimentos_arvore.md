@@ -23,4 +23,8 @@ não aplicamos um limite arbitrário para eliminar modelos. Médias próximas co
 baixo podem indicar subajuste, sem provar isso isoladamente. A pequena diferença entre
 candidatos precisa ser lida junto com os desvios das dobras, não como superioridade universal.
 
+## Leitura do overfitting
+
+Na árvore sem limite de profundidade, o F1 de treino chegou a 1.0000, enquanto o F1 de validação foi 0.7479; o gap de 0.2521 é o sinal mais claro de memorização. A profundidade 7 manteve F1 de treino 0.7715, obteve o maior F1 de validação (0.7551) e reduziu o gap para 0.0164.
+
 O gráfico de treino, validação e teste está em resultados/avaliacao_final/.

@@ -13,6 +13,10 @@ decisão efetiva de conceder ou recusar crédito.
 
 A árvore tem menor custo se custo_FN/custo_FP for menor que 51.467; no ponto há empate. Na relação oposta, o KNN tem menor custo.
 
+A árvore trocou 772 falsos positivos a menos por 15 falsos negativos a mais em relação ao
+KNN. Assim, a árvore é preferível enquanto um falso negativo custar menos de 51,467 vezes
+um falso positivo. Se essa relação de custos for maior, o KNN passa a ter menor custo.
+
 ## Cenário de custos ilustrativos
 
 Para demonstrar o cálculo, usamos custo_FP=R$ 1.000 e custo_FN=R$ 5.000.

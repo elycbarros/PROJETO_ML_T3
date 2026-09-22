@@ -146,6 +146,25 @@ e de preservação dos registros nas cinco dobras e no ajuste final.
         winner = e.loc[e.selecionado].iloc[0]
         columns = ["param", "train_f1_1_mean", "cv_f1", "cv_std", "treino_f1_1",
                    "teste_f1_1", "gap_f1"]
+        most_complex = e.iloc[-1]
+        if kind == "KNN":
+            diagnosis = (
+                f"No KNN, K=3 teve F1 médio de treino {e.iloc[0].train_f1_1_mean:.4f} e "
+                f"F1 de validação {e.iloc[0].cv_f1:.4f}, um gap de {e.iloc[0].cv_gap_f1:.4f}. "
+                f"Com K=9, o F1 de treino caiu para {winner.train_f1_1_mean:.4f}, mas o F1 "
+                f"de validação subiu para {winner.cv_f1:.4f} e o gap caiu para "
+                f"{winner.cv_gap_f1:.4f}. Por isso K=9 foi escolhido: ele generalizou melhor "
+                "entre os quatro valores testados, apesar de a diferença de validação ser pequena."
+            )
+        else:
+            diagnosis = (
+                f"Na árvore sem limite de profundidade, o F1 de treino chegou a "
+                f"{most_complex.train_f1_1_mean:.4f}, enquanto o F1 de validação foi "
+                f"{most_complex.cv_f1:.4f}; o gap de {most_complex.cv_gap_f1:.4f} é o sinal "
+                "mais claro de memorização. A profundidade 7 manteve F1 de treino "
+                f"{winner.train_f1_1_mean:.4f}, obteve o maior F1 de validação "
+                f"({winner.cv_f1:.4f}) e reduziu o gap para {winner.cv_gap_f1:.4f}."
+            )
         write(filename, f"""# Experimentos: {kind}
 
 {stale_note}
@@ -166,6 +185,10 @@ não aplicamos um limite arbitrário para eliminar modelos. Médias próximas co
 baixo podem indicar subajuste, sem provar isso isoladamente. A pequena diferença entre
 candidatos precisa ser lida junto com os desvios das dobras, não como superioridade universal.
 
+## Leitura do overfitting
+
+{diagnosis}
+
 O gráfico de treino, validação e teste está em resultados/avaliacao_final/.
 """)
     financial = table(finance)
@@ -180,6 +203,10 @@ decisão efetiva de conceder ou recusar crédito.
 ## Comparação de erros
 
 {cost_verdict}
+
+A árvore trocou 772 falsos positivos a menos por 15 falsos negativos a mais em relação ao
+KNN. Assim, a árvore é preferível enquanto um falso negativo custar menos de 51,467 vezes
+um falso positivo. Se essa relação de custos for maior, o KNN passa a ter menor custo.
 
 ## Cenário de custos ilustrativos
 
@@ -384,6 +411,7 @@ não é preciso executá-las em sequência. A avaliação não usa os scripts an
 - documentacao/data_prep.md: decisões e estatísticas do treino.
 - documentacao/experimentos_knn.md e experimentos_arvore.md: comparação de complexidade.
 - documentacao/avaliacao_final.md: erros, custos hipotéticos e interpretação.
+- documentacao/rastreabilidade_requisitos.md: exigência do problema, evidência e fala de apoio.
 - resultados/experimentos_corrigidos.csv: treino, validação e teste das oito configurações.
 - resultados/parametros_selecionados.json: seleção anterior às predições de teste.
 - resultados/auditoria_execucao.json: origem das partições, preservação e versões.

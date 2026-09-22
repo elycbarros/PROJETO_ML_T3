@@ -70,6 +70,7 @@ não é preciso executá-las em sequência. A avaliação não usa os scripts an
 - documentacao/data_prep.md: decisões e estatísticas do treino.
 - documentacao/experimentos_knn.md e experimentos_arvore.md: comparação de complexidade.
 - documentacao/avaliacao_final.md: erros, custos hipotéticos e interpretação.
+- documentacao/rastreabilidade_requisitos.md: exigência do problema, evidência e fala de apoio.
 - resultados/experimentos_corrigidos.csv: treino, validação e teste das oito configurações.
 - resultados/parametros_selecionados.json: seleção anterior às predições de teste.
 - resultados/auditoria_execucao.json: origem das partições, preservação e versões.

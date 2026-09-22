@@ -23,4 +23,8 @@ não aplicamos um limite arbitrário para eliminar modelos. Médias próximas co
 baixo podem indicar subajuste, sem provar isso isoladamente. A pequena diferença entre
 candidatos precisa ser lida junto com os desvios das dobras, não como superioridade universal.
 
+## Leitura do overfitting
+
+No KNN, K=3 teve F1 médio de treino 0.8444 e F1 de validação 0.5925, um gap de 0.2519. Com K=9, o F1 de treino caiu para 0.7048, mas o F1 de validação subiu para 0.5984 e o gap caiu para 0.1064. Por isso K=9 foi escolhido: ele generalizou melhor entre os quatro valores testados, apesar de a diferença de validação ser pequena.
+
 O gráfico de treino, validação e teste está em resultados/avaliacao_final/.
