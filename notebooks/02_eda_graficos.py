@@ -18,6 +18,17 @@ for nome, esperado in hashes.items():
 dados = pd.read_csv(RAIZ / "credit_risk_dataset.csv")
 dados.describe().T.to_csv(saida / "estatisticas_originais.csv")
 pd.DataFrame({"tipo": dados.dtypes.astype(str), "nulos": dados.isna().sum()}).to_csv(saida / "inventario.csv")
+nulos = dados.isna().sum().sort_values(ascending=False)
+fig, ax = plt.subplots(figsize=(9, 5))
+bars = ax.bar(nulos.index, nulos.values, color="#7F6000")
+ax.set_title("Valores ausentes por coluna — base original")
+ax.set_ylabel("Quantidade de valores ausentes")
+ax.tick_params(axis="x", rotation=70)
+for bar, n in zip(bars, nulos.values):
+    if n:
+        ax.text(bar.get_x() + bar.get_width()/2, n, f"{n:,}", ha="center", va="bottom", fontsize=8)
+ax.set_ylim(0, max(nulos.max() * 1.18, 1))
+fig.tight_layout(); fig.savefig(saida / "05_valores_nulos.svg", metadata={"Date": None}); fig.savefig(saida / "05_valores_nulos.png", dpi=140); plt.close(fig)
 classes = dados["loan_status"].value_counts().sort_index()
 
 fig, ax = plt.subplots(figsize=(8, 5))
@@ -84,11 +95,15 @@ A mediana da renda é {resumo['renda_mediana_em_dia']:,.0f} para contratos em di
 
 As medianas de `loan_percent_income` são {resumo['comprometimento_mediano_em_dia']:.3f} para a classe 0 e {resumo['comprometimento_mediano_inadimplente']:.3f} para a classe 1. A correlação de Pearson com o alvo é {resumo['correlacao_status_comprometimento']:.3f}; isso é associação descritiva, não causalidade.
 
+## Valores ausentes
+
+`person_emp_length` tem {int(dados['person_emp_length'].isna().sum()):,} valores ausentes e `loan_int_rate` tem {int(dados['loan_int_rate'].isna().sum()):,}. A mediana será usada para o tempo de emprego porque a distribuição é assimétrica; a média será usada para a taxa porque média e mediana são próximas. Esses valores são aprendidos somente no treino de cada dobra, depois do split.
+
 ## Correlações e próximos passos
 
 A correlação entre `loan_status` e `loan_int_rate` é {resumo['correlacao_status_taxa_juros']:.3f}. Correlação não determina exclusão automática nem causalidade. A preparação remove repetições exatas e idades de 123/144 anos e invalida dois tempos de emprego impossíveis. Mantém rendas extremas plausíveis, substitui a razão redundante pela coluna exigida e aprende imputadores somente no treino. Esta EDA descreve toda a base; não é uma análise cega de holdout.
 
-As figuras ficam em `resultados/graficos_eda/`. Os CSVs foram apenas lidos e tiveram seus hashes conferidos antes e depois da execução.
+As figuras ficam em `resultados/graficos_eda/`. O gráfico 05 resume os nulos observados antes da imputação. Os CSVs foram apenas lidos e tiveram seus hashes conferidos antes e depois da execução.
 """
 (RAIZ / "documentacao" / "eda_graficos.md").write_text(relatorio)
 for nome, esperado in hashes.items():

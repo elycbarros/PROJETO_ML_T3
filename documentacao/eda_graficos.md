@@ -12,8 +12,12 @@ A mediana da renda é 60,000 para contratos em dia e 41,498 para contratos inadi
 
 As medianas de `loan_percent_income` são 0.130 para a classe 0 e 0.240 para a classe 1. A correlação de Pearson com o alvo é 0.379; isso é associação descritiva, não causalidade.
 
+## Valores ausentes
+
+`person_emp_length` tem 895 valores ausentes e `loan_int_rate` tem 3,116. A mediana será usada para o tempo de emprego porque a distribuição é assimétrica; a média será usada para a taxa porque média e mediana são próximas. Esses valores são aprendidos somente no treino de cada dobra, depois do split.
+
 ## Correlações e próximos passos
 
 A correlação entre `loan_status` e `loan_int_rate` é 0.335. Correlação não determina exclusão automática nem causalidade. A preparação remove repetições exatas e idades de 123/144 anos e invalida dois tempos de emprego impossíveis. Mantém rendas extremas plausíveis, substitui a razão redundante pela coluna exigida e aprende imputadores somente no treino. Esta EDA descreve toda a base; não é uma análise cega de holdout.
 
-As figuras ficam em `resultados/graficos_eda/`. Os CSVs foram apenas lidos e tiveram seus hashes conferidos antes e depois da execução.
+As figuras ficam em `resultados/graficos_eda/`. O gráfico 05 resume os nulos observados antes da imputação. Os CSVs foram apenas lidos e tiveram seus hashes conferidos antes e depois da execução.
