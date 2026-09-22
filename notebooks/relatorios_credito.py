@@ -270,7 +270,7 @@ ficam em tests/test_pipeline.py.
 
     requirement_table = """| Critério técnico | Evidência |
 |---|---|
-| EDA | Inventário, estatísticas e quatro gráficos interpretados |
+| EDA | Inventário, estatísticas e cinco gráficos interpretados |
 | Limpeza | Limpeza registrada e estatísticas do treino para imputação |
 | Engenharia | Razão definido, proteção numérica e unidade definida |
 | Separação | Split estratificado e auditoria de origem por dobra |
