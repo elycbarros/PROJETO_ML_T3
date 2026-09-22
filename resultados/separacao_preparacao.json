@@ -1,27 +1,29 @@
 {
-  "random_state": 42,
-  "test_size": 0.2,
-  "features_originais": 11,
-  "treino_antes_balanceamento": 25928,
-  "teste": 6483,
-  "treino_classes_antes": {
-    "0": 20257,
-    "1": 5671
-  },
-  "treino_classes_depois": {
+  "train": 25928,
+  "evaluation": 6483,
+  "balanced": 40514,
+  "retained_originals": 25928,
+  "overlap_source_rows": 0,
+  "balanced_classes": {
     "0": 20257,
     "1": 20257
   },
-  "teste_classes_mantidas": {
+  "evaluation_classes": {
     "0": 5065,
     "1": 1418
   },
-  "dimensao_knn": [
-    26,
-    26
+  "same_resampling_for_both_models": true,
+  "scaler_fit_rows": 40514,
+  "scale_columns": [
+    "person_income",
+    "person_emp_length",
+    "loan_amnt",
+    "loan_int_rate",
+    "comprometimento_renda"
   ],
-  "dimensao_arvore": [
-    26,
-    26
-  ]
+  "discrete_without_scale": [
+    "person_age",
+    "cb_person_cred_hist_length"
+  ],
+  "oversampling_sha256": "51bb7183735d1dc917ef80efbc1a2dbbf903c84ce542b029983328c8415d89f5"
 }

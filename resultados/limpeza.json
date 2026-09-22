@@ -1,0 +1,28 @@
+{
+  "original": 32581,
+  "duplicatas_removidas": 165,
+  "idades_excluidas": 5,
+  "idades_observadas": [
+    144,
+    144,
+    123,
+    123,
+    144
+  ],
+  "empregos_convertidos_em_nulos": 2,
+  "final": 32411,
+  "nulos_apos_limpeza": {
+    "person_age": 0,
+    "person_income": 0,
+    "person_home_ownership": 0,
+    "person_emp_length": 889,
+    "loan_intent": 0,
+    "loan_grade": 0,
+    "loan_amnt": 0,
+    "loan_int_rate": 3094,
+    "loan_status": 0,
+    "loan_percent_income": 0,
+    "cb_person_default_on_file": 0,
+    "cb_person_cred_hist_length": 0
+  }
+}

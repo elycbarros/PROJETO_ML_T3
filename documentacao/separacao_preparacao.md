@@ -1,9 +1,26 @@
-# Separação e preparação sem vazamento
+# Separação e preparação
 
-Foi aplicado `train_test_split(test_size=0.20, stratify=y, random_state=42)`. O treino ficou com 25,928 linhas e o teste com 6,483. O teste preservou as classes: {0: 5065, 1: 1418}.
+Split 80/20 com stratify=y e random_state=42: 25928 linhas de treino e
+6483 de teste. A identidade é o número da linha no CSV original (base zero).
+Os índices e as repetições estão em resultados/indices_split.csv e
+resultados/indices_treino_balanceado.csv.
 
-Imputadores, codificadores e escalonadores foram ajustados somente no treino; o teste usa apenas `transform`. O KNN recebeu mediana para numéricas, moda e one-hot para categóricas e `StandardScaler` nas numéricas. A árvore recebeu as mesmas imputações e codificação, sem escalonamento.
+Imputação e One-Hot Encoding são ajustados somente no treino de cada dobra.
+A validação recebe apenas transform. O oversampling mantém cada linha de treino
+e acrescenta cópias da classe minoritária. O ajuste final tem 40514 linhas
+balanceadas, preservando todas as 25928 originais do treino.
+As duas famílias recebem exatamente os mesmos índices balanceados.
 
-O oversampling aleatório foi aplicado somente ao treino, depois da transformação. As classes passaram de {0: 20257, 1: 5671} para {0: 20257, 1: 20257}; o teste não foi reamostrado.
+StandardScaler é ajustado depois do balanceamento. Somente renda, tempo de emprego,
+valor do empréstimo, taxa de juros e comprometimento_renda são escalonados.
+Idade e duração do histórico, registradas em anos inteiros, são tratadas como discretas
+e ficam sem escala; as dummies também não são escalonadas. Essa decisão atende à
+separação pedida entre contínuas e demais atributos, mas deixa as durações em sua
+unidade original no cálculo de distância. A árvore usa todas as variáveis sem escala.
 
-`loan_percent_income` foi retirado deste primeiro conjunto de preditores por representar informação quase duplicada da feature definido. Essa escolha poderá ser revisitada em análise de sensibilidade.
+Nenhum parâmetro estatístico é aprendido no teste. Há auditoria de sobreposição de origem
+e de preservação dos registros nas cinco dobras e no ajuste final.
+
+## Limitação conhecida
+
+O teste e a base completa já foram consultados durante o desenvolvimento anterior. A correção mantém a semente e a divisão e não usa o teste na seleção atual, mas não recupera a independência de um conjunto externo intocado.

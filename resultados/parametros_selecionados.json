@@ -1,0 +1,10 @@
+{
+  "criterio": "maior F1 médio da classe 1 em 5 dobras no treino",
+  "desempate": "K maior; árvore menos profunda",
+  "selecionados": {
+    "KNN": "9",
+    "Tree": "7"
+  },
+  "semente": 42,
+  "limitacao": "O teste e a base completa já foram consultados durante o desenvolvimento anterior. A correção mantém a semente e a divisão e não usa o teste na seleção atual, mas não recupera a independência de um conjunto externo intocado."
+}

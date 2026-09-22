@@ -1,15 +1,17 @@
-# Feature engineering: comprometimento da renda
+# Engenharia de atributos
 
-## Regra aplicada
+A fórmula definido é (loan_amnt / person_income) * 100. Ela relaciona o valor total
+do empréstimo à renda anual informada; não mede parcela mensal nem comprometimento mensal.
 
-Foi criada `comprometimento_renda` com `(loan_amnt / person_income) * 100`. O cálculo só ocorre quando `person_income` existe e é maior que zero; valores infinitos são convertidos em nulos. Na base derivada, foram produzidos 0 nulos e 32411 valores finitos.
+Ambos os operandos são verificados quanto a nulos, infinitos e valores não positivos
+antes da divisão. O cálculo mascarado não executa divisões inválidas.
+Nesta base não há operandos inválidos: 32411 razões finitas e
+0 nulos. Se houver operandos inválidos em outra base, a etapa interrompe
+em vez de imputar globalmente; eventual imputação deve ocorrer somente no treino.
 
-## Comparação com a variável original
-
-`loan_percent_income` parece representar a mesma relação em escala de proporção. Após convertê-la para percentual, a diferença absoluta mediana foi 0.2500 ponto percentual e 11% das linhas ficaram dentro de 0,005 ponto percentual.
-
-Essa semelhança será considerada na preparação dos modelos para evitar peso duplicado à mesma informação. A coluna exigida permanece na base derivada e no dicionário; a seleção final de atributos será registrada depois do split.
-
-## Arquivo gerado
-
-`dados_derivados/credito_com_feature.csv` contém a limpeza estrutural e a coluna calculada. Os CSVs originais foram apenas lidos e tiveram seus hashes conferidos.
+loan_percent_income está em proporção; comprometimento_renda está em percentual.
+A diferença mediana entre as duas, na mesma unidade, é
+0.2500 ponto percentual.
+98.68% das linhas diferem em até 0,5001 ponto.
+A versão original é retirada dos preditores para evitar peso redundante no KNN.
+Não se trata de colinearidade estrita comprovada.

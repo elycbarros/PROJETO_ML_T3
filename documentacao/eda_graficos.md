@@ -6,7 +6,7 @@ A inadimplência representa 21.82% dos registros. Há diferença relevante entre
 
 ## Renda anual
 
-A mediana da renda é 60,000 para contratos em dia e 41,498 para contratos inadimplentes. O histograma deve ser lido com cautela porque a renda é assimétrica e possui valores muito altos; essa variável será examinada junto dos outliers.
+A mediana da renda é 60,000 para contratos em dia e 41,498 para contratos inadimplentes. O histograma usa intervalos comuns e eixo logarítmico, sem remover registros. Cada classe é normalizada separadamente; a altura mostra sua fração no intervalo. Valores altos não demonstram erro por si sós.
 
 ## Comprometimento da renda
 
@@ -14,6 +14,6 @@ As medianas de `loan_percent_income` são 0.130 para a classe 0 e 0.240 para a c
 
 ## Correlações e próximos passos
 
-A correlação entre `loan_status` e `loan_int_rate` é 0.335. Correlação não será justificativa única para excluir colunas. Próximas decisões: investigar caudas de renda, idade e tempo de emprego; comparar `comprometimento_renda` com `loan_percent_income`; e definir imputação após examinar outliers.
+A correlação entre `loan_status` e `loan_int_rate` é 0.335. Correlação não determina exclusão automática nem causalidade. A preparação remove repetições exatas e idades de 123/144 anos e invalida dois tempos de emprego impossíveis. Mantém rendas extremas plausíveis, substitui a razão redundante pela coluna exigida e aprende imputadores somente no treino. Esta EDA descreve toda a base; não é uma análise cega de holdout.
 
 As figuras ficam em `resultados/graficos_eda/`. Os CSVs foram apenas lidos e tiveram seus hashes conferidos antes e depois da execução.

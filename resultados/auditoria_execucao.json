@@ -1,0 +1,199 @@
+{
+  "hashes_originais": {
+    "E Commerce Dataset - E Comm.csv": "3341cb35ac6c76a8c96e0e7a2cffbca1af99dd9aeb3498f67532477adaf880ae",
+    "credit_risk_dataset.csv": "ce3c6d2167717bf1627d1c0c81cbccd28323cd4aa7b96d542599366d5ff6aac8"
+  },
+  "folds": [
+    {
+      "train": 20742,
+      "evaluation": 5186,
+      "balanced": 32410,
+      "retained_originals": 20742,
+      "overlap_source_rows": 0,
+      "balanced_classes": {
+        "0": 16205,
+        "1": 16205
+      },
+      "evaluation_classes": {
+        "0": 4052,
+        "1": 1134
+      },
+      "same_resampling_for_both_models": true,
+      "scaler_fit_rows": 32410,
+      "scale_columns": [
+        "person_income",
+        "person_emp_length",
+        "loan_amnt",
+        "loan_int_rate",
+        "comprometimento_renda"
+      ],
+      "discrete_without_scale": [
+        "person_age",
+        "cb_person_cred_hist_length"
+      ],
+      "oversampling_sha256": "096e23d402faf0e70375a9a23c5a8d463d7f80bdf3682f2c5f3cfa5c8a8b4655",
+      "fold": 1
+    },
+    {
+      "train": 20742,
+      "evaluation": 5186,
+      "balanced": 32410,
+      "retained_originals": 20742,
+      "overlap_source_rows": 0,
+      "balanced_classes": {
+        "0": 16205,
+        "1": 16205
+      },
+      "evaluation_classes": {
+        "0": 4052,
+        "1": 1134
+      },
+      "same_resampling_for_both_models": true,
+      "scaler_fit_rows": 32410,
+      "scale_columns": [
+        "person_income",
+        "person_emp_length",
+        "loan_amnt",
+        "loan_int_rate",
+        "comprometimento_renda"
+      ],
+      "discrete_without_scale": [
+        "person_age",
+        "cb_person_cred_hist_length"
+      ],
+      "oversampling_sha256": "ffca93a11e708e007fb6c2bc61ffb6a44fb7d34f6b83563b1b518b55815740e9",
+      "fold": 2
+    },
+    {
+      "train": 20742,
+      "evaluation": 5186,
+      "balanced": 32412,
+      "retained_originals": 20742,
+      "overlap_source_rows": 0,
+      "balanced_classes": {
+        "0": 16206,
+        "1": 16206
+      },
+      "evaluation_classes": {
+        "0": 4051,
+        "1": 1135
+      },
+      "same_resampling_for_both_models": true,
+      "scaler_fit_rows": 32412,
+      "scale_columns": [
+        "person_income",
+        "person_emp_length",
+        "loan_amnt",
+        "loan_int_rate",
+        "comprometimento_renda"
+      ],
+      "discrete_without_scale": [
+        "person_age",
+        "cb_person_cred_hist_length"
+      ],
+      "oversampling_sha256": "8d35288f0559749ca9c28ec66dd7a23cb0bdee435d9ce6fe0e934fb54ee52b1b",
+      "fold": 3
+    },
+    {
+      "train": 20743,
+      "evaluation": 5185,
+      "balanced": 32412,
+      "retained_originals": 20743,
+      "overlap_source_rows": 0,
+      "balanced_classes": {
+        "0": 16206,
+        "1": 16206
+      },
+      "evaluation_classes": {
+        "0": 4051,
+        "1": 1134
+      },
+      "same_resampling_for_both_models": true,
+      "scaler_fit_rows": 32412,
+      "scale_columns": [
+        "person_income",
+        "person_emp_length",
+        "loan_amnt",
+        "loan_int_rate",
+        "comprometimento_renda"
+      ],
+      "discrete_without_scale": [
+        "person_age",
+        "cb_person_cred_hist_length"
+      ],
+      "oversampling_sha256": "3896cb215686beb2a2f71e66386fe1051897741cafd37c214dff2243b599dae4",
+      "fold": 4
+    },
+    {
+      "train": 20743,
+      "evaluation": 5185,
+      "balanced": 32412,
+      "retained_originals": 20743,
+      "overlap_source_rows": 0,
+      "balanced_classes": {
+        "0": 16206,
+        "1": 16206
+      },
+      "evaluation_classes": {
+        "0": 4051,
+        "1": 1134
+      },
+      "same_resampling_for_both_models": true,
+      "scaler_fit_rows": 32412,
+      "scale_columns": [
+        "person_income",
+        "person_emp_length",
+        "loan_amnt",
+        "loan_int_rate",
+        "comprometimento_renda"
+      ],
+      "discrete_without_scale": [
+        "person_age",
+        "cb_person_cred_hist_length"
+      ],
+      "oversampling_sha256": "328b7171f742ba04a72161c14bee820e3669c0165d340ca62f37948cb7991a56",
+      "fold": 5
+    },
+    {
+      "fold": "final",
+      "train": 25928,
+      "evaluation": 6483,
+      "balanced": 40514,
+      "retained_originals": 25928,
+      "overlap_source_rows": 0,
+      "balanced_classes": {
+        "0": 20257,
+        "1": 20257
+      },
+      "evaluation_classes": {
+        "0": 5065,
+        "1": 1418
+      },
+      "same_resampling_for_both_models": true,
+      "scaler_fit_rows": 40514,
+      "scale_columns": [
+        "person_income",
+        "person_emp_length",
+        "loan_amnt",
+        "loan_int_rate",
+        "comprometimento_renda"
+      ],
+      "discrete_without_scale": [
+        "person_age",
+        "cb_person_cred_hist_length"
+      ],
+      "oversampling_sha256": "51bb7183735d1dc917ef80efbc1a2dbbf903c84ce542b029983328c8415d89f5"
+    }
+  ],
+  "selection_sha256": "cd6d58a6a5f7ce3dd6b31d6ff5fa1f1024d0ca4ae41659cd75d0ebf8eee343a1",
+  "configuration_count": 8,
+  "test_consulted_only_after_selection_this_run": true,
+  "historical_test_exposure": "O teste e a base completa já foram consultados durante o desenvolvimento anterior. A correção mantém a semente e a divisão e não usa o teste na seleção atual, mas não recupera a independência de um conjunto externo intocado.",
+  "python": "3.14.6",
+  "versions": {
+    "numpy": "2.4.2",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.0",
+    "matplotlib": "3.11.1"
+  }
+}

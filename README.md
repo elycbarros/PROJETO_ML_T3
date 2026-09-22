@@ -1,63 +1,99 @@
 # Risco de crédito: KNN e Árvore de Decisão
 
 estudo de risco de crédito de Machine Learning e Visão Computacional — projeto.
+Alvo: loan_status=1 indica inadimplência; 0 indica pagamento em dia, conforme o problema.
 
-O objetivo é comparar dois modelos para prever `loan_status`: 1 indica inadimplência e 0 indica pagamento em dia, conforme o problema. A recomendação final considerará os erros de classificação e suas consequências para o banco.
+O problema de negócio é apoiar a avaliação de risco de crédito: deixar passar um
+inadimplente pode gerar perda do empréstimo, enquanto recusar um bom pagador pode
+causar perda de receita e de relacionamento. Comparamos os dois tipos de erro.
 
 ## Resumo executivo
 
-A base possui 32.581 registros originais, dos quais 21,82% representam inadimplência. A preparação removeu 165 duplicatas e 5 registros com idade acima de 100 anos somente em arquivos derivados. Os nulos de tempo de emprego e taxa de juros foram imputados por mediana dentro do treino.
+| model | param | test_accuracy | test_precision_1 | test_recall_1 | test_f1_1 | fp | fn |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| KNN | 9 | 0.7861 | 0.5075 | 0.7433 | 0.6031 | 1023 | 364 |
+| Tree | 7 | 0.9028 | 0.8054 | 0.7327 | 0.7674 | 251 | 379 |
 
-Após a validação corrigida, o KNN com `K=3` teve F1 de 0,647 no teste e a Árvore com `max_depth=7` teve F1 de 0,743, acurácia de 0,884, precisão de 0,721 e recall de 0,767. O modelo recomendado preliminarmente é a Árvore de Decisão. A decisão deve ser recalibrada com custos reais de falsos positivos e falsos negativos antes de qualquer uso operacional.
+Na base original, 21,82% dos registros são inadimplentes. A renda e a razão empréstimo/renda
+apresentam distribuições diferentes entre classes. Foram removidas 165 repetições exatas,
+excluídas cinco idades de 123 ou 144 anos e invalidados dois tempos de emprego de 123 anos.
+A cópia de trabalho tem 32411 registros. A coluna definido usa valor do empréstimo
+dividido pela renda anual e multiplicado por 100; não representa parcela mensal.
 
-## Dados originais
-
-Os dois CSVs fornecidos ficam na raiz e devem permanecer intactos. Apenas `credit_risk_dataset.csv` será usado na modelagem. Os hashes SHA-256 estão em `documentacao/integridade_originais.json`. Transformações acontecerão em memória; eventuais exportações irão para `dados_derivados/`.
-
-Fonte da base de crédito: https://drive.google.com/file/d/12vm4oQEeH7ZqB6glXEPpkc5V91lQy0mk/view
-
-## Organização
-
-- `notebooks/01_inspecao_inicial.ipynb`: inventário e verificações da base original.
-- `notebooks/02_eda_graficos.py`: gráficos e interpretação da EDA.
-- `notebooks/03_data_prep_diagnostico.py`: duplicatas, nulos e consistência.
-- `notebooks/04_feature_engineering.py`: criação da coluna definido.
-- `notebooks/05_separacao_preparacao.py`: split, imputação, encoding, balanceamento e escala.
-- `notebooks/06_experimentos_knn.py`: quatro valores de K.
-- `notebooks/07_experimentos_arvore.py`: quatro profundidades da árvore.
-- `notebooks/08_avaliacao_final.py`: relatórios e matrizes históricos.
-- `notebooks/09_validacao_corrigida.py`: reexecução sem vazamento na validação cruzada e geração dos artefatos vigentes.
-- `notebooks/10_graficos_complementares.py`: geração de curvas de overfitting, validação do KNN, feature importance e simulação financeira.
-- `notebooks/pipeline_completo.ipynb`: notebook interativo consolidado com todo o pipeline executado e gráficos renderizados.
-- `documentacao/dicionario_dados.md`: dicionário e resumo do inventário da base de crédito.
-- `documentacao/eda_graficos.md`: interpretações da análise exploratória.
-- `documentacao/data_prep.md`: política de limpeza e consistência.
-- `documentacao/feature_engineering.md`: regra e validação da nova coluna.
-- `documentacao/separacao_preparacao.md`: controle contra vazamento.
-- `documentacao/avaliacao_final.md`: comparação final e recomendação.
-- `documentacao/plano.md`: critérios de conclusão e decisões pendentes.
-- `dados_derivados/`: arquivos transformados, quando necessários.
-- `resultados/`: tabelas e gráficos produzidos durante o projeto.
+O candidato recomendado no cenário ilustrativo é Árvore de Decisão, configuração
+7. A árvore tem menor custo se custo_FN/custo_FP for menor que 51.467; no ponto há empate. Na relação oposta, o KNN tem menor custo.
 
 ## Reprodução
 
-Com Python e as dependências instaladas (`scikit-learn`, `pandas`, `numpy`, `matplotlib`), executar a partir da raiz:
+Ambiente verificado: Python 3.14.6. As versões usadas estão em requirements.txt.
+Na raiz do projeto:
 
-```text
-# Abrir notebooks/01_inspecao_inicial.ipynb e executar as células
-python3 notebooks/02_eda_graficos.py
-python3 notebooks/03_data_prep_diagnostico.py
-python3 notebooks/04_feature_engineering.py
-python3 notebooks/05_separacao_preparacao.py
-python3 notebooks/06_experimentos_knn.py
-python3 notebooks/07_experimentos_arvore.py
-python3 notebooks/08_avaliacao_final.py
+~~~sh
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r requirements.txt
 python3 notebooks/09_validacao_corrigida.py
-python3 notebooks/10_graficos_complementares.py
-```
+python3 -m unittest discover -s tests -v
+~~~
 
-Os scripts sempre conferem os hashes dos arquivos de entrada. Os CSVs originais não são sobrescritos; resultados transformados ficam em `dados_derivados/` e tabelas, gráficos e relatórios em `resultados/` e `documentacao/`. Os resultados de `06_experimentos_knn.py` e `07_experimentos_arvore.py` são históricos; `09_validacao_corrigida.py` é a execução metodologicamente válida.
+Alternativa: iniciar JupyterLab e executar todas as células de
+notebooks/pipeline_completo.ipynb. Ele realmente chama o pipeline e regenera os resultados;
+não depende de matrizes ou figuras previamente calculadas.
+
+A entrada 09 executa EDA e o pipeline canônico em notebooks/pipeline_credito.py.
+As entradas 03 a 08 e 10 foram atualizadas para a implementação vigente;
+não é preciso executá-las em sequência. A avaliação não usa os scripts antigos do histórico.
+
+## Arquivos e leitura
+
+### Dicionário de dados
+
+| Coluna | Tipo | Papel | Descrição operacional |
+|---|---|---|---|
+| `person_age` | inteiro | preditora | Idade informada da pessoa solicitante. |
+| `person_income` | inteiro | preditora | Renda anual informada. |
+| `person_home_ownership` | categórica | preditora | Situação de moradia informada. |
+| `person_emp_length` | decimal | preditora | Tempo de emprego informado, em anos. |
+| `loan_intent` | categórica | preditora | Finalidade declarada do empréstimo. |
+| `loan_grade` | categórica | preditora | Classificação de risco do empréstimo na base. |
+| `loan_amnt` | inteiro | preditora | Valor solicitado para o empréstimo. |
+| `loan_int_rate` | decimal | preditora | Taxa de juros do empréstimo. |
+| `loan_status` | inteiro | alvo | 0: pagamento em dia; 1: inadimplência. |
+| `loan_percent_income` | decimal | excluída dos preditores | Razão empréstimo/renda em proporção: 0,13 significa 13%; redundante com a feature calculada. |
+| `cb_person_default_on_file` | categórica | preditora | Indicador de inadimplência anterior. |
+| `cb_person_cred_hist_length` | inteiro | preditora | Comprimento do histórico de crédito, em anos. |
+| `comprometimento_renda` | decimal | preditora calculada | `(loan_amnt / person_income) * 100`, em percentual; não representa parcela mensal. |
+
+
+
+- documentacao/dicionario_dados.md: significado, unidade e papel de cada coluna.
+- documentacao/data_prep.md: decisões e estatísticas do treino.
+- documentacao/experimentos_knn.md e experimentos_arvore.md: comparação de complexidade.
+- documentacao/avaliacao_final.md: erros, custos hipotéticos e interpretação.
+- resultados/experimentos_corrigidos.csv: treino, validação e teste das oito configurações.
+- resultados/parametros_selecionados.json: seleção anterior às predições de teste.
+- resultados/auditoria_execucao.json: origem das partições, preservação e versões.
+- resultados/avaliacao_final/: relatórios, predições, matrizes e importância da árvore avaliada.
+- tests/test_pipeline.py: provas de ausência de vazamento e consistência dos artefatos.
+
+Os relatórios identificados como gerados são mantidos por notebooks/relatorios_credito.py.
+Alterações de interpretação devem entrar nesse gerador para sobreviver à reexecução.
+O dicionário e este README apresentam os resultados vigentes; resultados anteriores permanecem no Git.
+
+## Dados originais
+
+Os dois CSVs da raiz são somente leitura para o pipeline. Os hashes são conferidos antes
+e depois. Apenas a base de crédito entra na modelagem. Saídas ficam em dados_derivados/,
+resultados/ e documentacao/. O índice de origem não entra como preditor.
+
+Fonte disponibilizada no problema:
+[base de crédito](https://drive.google.com/file/d/12vm4oQEeH7ZqB6glXEPpkc5V91lQy0mk/view).
 
 ## Limitações
 
-O teste é uma divisão aleatória, não uma validação temporal. A estudo não fornece custo financeiro por erro, portanto o veredito usa a hipótese explícita de que liberar crédito a um inadimplente tende a ser mais caro. A recomendação é um resultado acadêmico e precisa de validação adicional antes de produção.
+O teste e a base completa já foram consultados durante o desenvolvimento anterior. A correção mantém a semente e a divisão e não usa o teste na seleção atual, mas não recupera a independência de um conjunto externo intocado.
+
+As classes não possuem datas para validação temporal; a disponibilidade prévia de juros
+e classificação de risco precisa ser confirmada. Custos monetários são hipóteses do exercício.
+Importância das variáveis não comprova causalidade. Não há garantia de desempenho futuro.
+

@@ -1,9 +1,26 @@
-# Experimentos da Árvore de Decisão
+# Experimentos: Tree
 
-Foram avaliadas quatro configurações de `max_depth`: 3, 5, 7 e `None`. O treino foi balanceado e o teste manteve a distribuição original. A escolha preliminar foi orientada pelo F1 médio da classe 1 em validação estratificada de cinco partes no treino.
+Este documento foi regenerado pelo pipeline vigente. Resultados anteriores permanecem no histórico Git e não devem ser usados na análise.
 
-O melhor candidato pelo equilíbrio entre validação interna e generalização foi **max_depth = 7**. A tabela completa está em `resultados/arvore_experimentos.csv`. A profundidade `None` teve F1 de treino igual a 1,00 e gap de 0,28, sinal claro de overfitting; por isso foi descartada apesar do F1 alto na validação feita sobre a matriz balanceada.
+| param | train_f1_1_mean | cv_f1 | cv_std | treino_f1_1 | teste_f1_1 | gap_f1 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 3 | 0.7079 | 0.7060 | 0.0093 | 0.7083 | 0.7179 | -0.0096 |
+| 5 | 0.7368 | 0.7331 | 0.0073 | 0.7280 | 0.7220 | 0.0060 |
+| 7 | 0.7715 | 0.7551 | 0.0117 | 0.7865 | 0.7674 | 0.0191 |
+| None | 1.0000 | 0.7479 | 0.0057 | 1.0000 | 0.7574 | 0.2426 |
 
-O `gap_f1` compara o F1 de treino e teste. Uma árvore sem limite de profundidade tende a ter maior capacidade de memorizar os dados; essa hipótese será confrontada com os números.
+train_f1_1_mean mede o treino original de cada dobra; cv_f1 mede sua validação.
+treino_f1_1 é medido no treino original completo, sem repetições do oversampling.
+As métricas de teste de todas as configurações atendem à comparação pedida pelo problema,
+mas são calculadas somente depois de persistir os parâmetros selecionados.
 
-A árvore foi treinada sem `StandardScaler`: seus cortes são baseados em limiares e não dependem da escala. Os CSVs originais foram apenas lidos e tiveram os hashes conferidos.
+A seleção foi 7, com F1 médio de validação 0.7551.
+Usamos o maior F1 médio; em empate exato, K maior no KNN e menor profundidade na árvore.
+
+O intervalo observado do gap treino-validação é 0.0018 a
+0.2521. Quanto maior a vantagem no treino, maior o indício de ajuste excessivo;
+não aplicamos um limite arbitrário para eliminar modelos. Médias próximas com desempenho
+baixo podem indicar subajuste, sem provar isso isoladamente. A pequena diferença entre
+candidatos precisa ser lida junto com os desvios das dobras, não como superioridade universal.
+
+O gráfico de treino, validação e teste está em resultados/avaliacao_final/.

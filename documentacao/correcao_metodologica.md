@@ -1,7 +1,20 @@
 # Correção metodológica
 
-A validação foi refeita a partir dos dados brutos do treino. Em cada dobra, imputação, codificação, balanceamento por oversampling da classe minoritária e escalonamento do KNN foram ajustados somente na parte de treino. A validação manteve sua distribuição original.
+Uma única implementação em notebooks/pipeline_credito.py é usada pelas entradas do projeto.
+Os resultados históricos foram substituídos nos arquivos vigentes e permanecem no Git.
 
-O oversampling preserva todos os registros da classe majoritária e acrescenta somente cópias da classe minoritária. Os dois registros com tempo de emprego maior que a idade foram convertidos em nulos e entram na imputação do treino.
+- Limpeza estrutural antes do split; valores de emprego impossíveis viram nulos.
+- Razão protegida, calculada sem imputação global.
+- Cinco dobras do treino bruto; transformações e balanceamento dentro de cada dobra.
+- Mesmos índices balanceados para KNN e árvore.
+- Scaler nas contínuas, ajustado no treino balanceado.
+- Seleção persistida antes do teste: {'KNN': '9', 'Tree': '7'}.
+- Oito comparações de treino/teste; treino avaliado sem duplicações artificiais.
+- Importância extraída da árvore realmente avaliada.
+- Simulação financeira calculada a partir das contagens geradas, sem números fixados.
+- Relatórios e figuras são regenerados a partir dos mesmos resultados.
 
-Parâmetros escolhidos exclusivamente pela média de F1 da classe 1 na validação: KNN=3; Árvore=7. Resultados corrigidos: `resultados/validacao_corrigida.csv` e `resultados/avaliacao_corrigida.csv`. Os resultados anteriores ficam superados.
+O teste e a base completa já foram consultados durante o desenvolvimento anterior. A correção mantém a semente e a divisão e não usa o teste na seleção atual, mas não recupera a independência de um conjunto externo intocado.
+
+A auditoria detalhada está em resultados/auditoria_execucao.json. Os testes de regressão
+ficam em tests/test_pipeline.py.
