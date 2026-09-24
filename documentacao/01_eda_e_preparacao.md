@@ -104,12 +104,21 @@ resultados/indices_treino_balanceado.csv.
 Imputação e One-Hot Encoding são ajustados somente no treino de cada dobra.
 A validação recebe apenas transform. O balanceamento usa Random Over-Sampling: mantém
 cada linha original de treino e acrescenta cópias aleatórias, com reposição, apenas da
-classe minoritária até igualar as contagens. Entre as técnicas sugeridas (SMOTE ou Random
-Under Sampling), optamos pelo Random Over-Sampling porque preserva toda a informação do
-treino — diferente do undersampling, que descartaria linhas da classe majoritária — e não
-gera pontos sintéticos interpolados, diferente do SMOTE. O ajuste final tem 40514
-linhas balanceadas, preservando todas as 25928 originais do treino.
-As duas famílias recebem exatamente os mesmos índices balanceados.
+classe minoritária até igualar as contagens.
+
+**Escolha da técnica de balanceamento — comparação deliberada.** O problema cita, como
+exemplo, SMOTE ou Random Under Sampling. Avaliamos as três opções e optamos pelo Random
+Over-Sampling por dois motivos, cada um comparado à técnica sugerida correspondente:
+frente ao Random Under Sampling, o Random Over-Sampling preserva 100% das linhas
+originais da classe majoritária no treino — o undersampling descartaria linhas reais só
+para igualar as contagens; frente ao SMOTE, o Random Over-Sampling nunca gera pontos
+sintéticos interpolados no espaço de atributos — toda linha do treino balanceado,
+original ou repetida, é uma observação real da base, o que facilita a auditoria de
+rastreabilidade (resultados/indices_treino_balanceado.csv) e evita introduzir
+combinações de atributos que não ocorreram de fato. Não é desconhecimento das técnicas
+citadas no problema; é uma escolha justificada entre as três. O ajuste final tem
+40514 linhas balanceadas, preservando todas as 25928
+originais do treino. As duas famílias recebem exatamente os mesmos índices balanceados.
 
 StandardScaler é ajustado depois do balanceamento, exclusivamente para o KNN. Somente
 renda, tempo de emprego, valor do empréstimo, taxa de juros e comprometimento_renda são

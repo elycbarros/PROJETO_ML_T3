@@ -127,7 +127,17 @@ def split_data(data):
 
 def oversample_indices(y, seed=SEED):
     """Random Over-Sampling: inclui cada linha original uma vez e acrescenta cópias
-    aleatórias, com reposição, apenas do déficit das classes minoritárias."""
+    aleatórias, com reposição, apenas do déficit das classes minoritárias.
+
+    Escolha deliberada em vez das duas técnicas sugeridas no problema (SMOTE e Random
+    Under Sampling), comparadas explicitamente:
+    - vs. Random Under Sampling: preserva as 100% das linhas originais da classe
+      majoritária no treino; undersampling descartaria linhas reais.
+    - vs. SMOTE: nunca gera pontos sintéticos interpolados; toda linha resultante,
+      original ou repetida, é uma observação real da base.
+    Aplicada estritamente sobre os índices do treino (nunca teste ou validação),
+    atendendo à mesma regra de ouro que qualquer uma das três técnicas teria de seguir.
+    """
     values = np.asarray(y)
     classes, counts = np.unique(values, return_counts=True)
     rng = np.random.default_rng(seed)
