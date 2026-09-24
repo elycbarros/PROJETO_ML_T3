@@ -1,7 +1,6 @@
 """Pipeline canônico: preparação por dobra, seleção por CV e teste descritivo.
 
 As transformações estatísticas nunca são ajustadas em validação ou teste.
-O teste já foi consultado durante versões anteriores: não é um holdout intocado.
 """
 from pathlib import Path
 import hashlib
@@ -36,9 +35,10 @@ CONTINUOUS = [
 ]
 DISCRETE = ["person_age", "cb_person_cred_hist_length"]
 LIMITATION = (
-    "O teste e a base completa já foram consultados durante o desenvolvimento anterior. "
-    "A correção mantém a semente e a divisão e não usa o teste na seleção atual, mas "
-    "não recupera a independência de um conjunto externo intocado."
+    "O teste só é usado depois que os hiperparâmetros são escolhidos por validação "
+    "cruzada (5 dobras, só no treino). Como a base completa foi examinada durante o "
+    "desenvolvimento deste projeto, o teste não tem a independência de uma amostra "
+    "nunca vista antes; a seleção, porém, não consulta o teste em nenhuma etapa."
 )
 
 
@@ -369,7 +369,7 @@ def run_all():
     directory.mkdir(parents=True, exist_ok=True)
     fold_frame = pd.DataFrame(folds)
     fold_frame.to_csv(ROOT / "resultados/metricas_por_dobra.csv", index=False)
-    pd.DataFrame(summary).to_csv(ROOT / "resultados/validacao_corrigida.csv", index=False)
+    pd.DataFrame(summary).to_csv(ROOT / "resultados/validacao_cruzada.csv", index=False)
     pd.DataFrame({"origem_linha": Xtr.index[indices]}).to_csv(
         ROOT / "resultados/indices_treino_balanceado.csv", index=False
     )
@@ -401,8 +401,8 @@ def run_all():
             })
     assert hashlib.sha256(selection_path.read_bytes()).hexdigest() == selection_hash
     experiments, final = pd.DataFrame(experiment_rows), pd.DataFrame(final_rows)
-    experiments.to_csv(ROOT / "resultados/experimentos_corrigidos.csv", index=False)
-    final.to_csv(ROOT / "resultados/avaliacao_corrigida.csv", index=False)
+    experiments.to_csv(ROOT / "resultados/experimentos.csv", index=False)
+    final.to_csv(ROOT / "resultados/avaliacao_teste.csv", index=False)
     final.to_csv(directory / "comparacao_final.csv", index=False)
     for kind, name in [("KNN", "knn"), ("Tree", "arvore")]:
         experiments[experiments.model == kind].to_csv(

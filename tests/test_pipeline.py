@@ -95,7 +95,7 @@ class OutputContracts(unittest.TestCase):
         self.assertEqual(len(verify_originals()), 1)
 
     def test_eight_corrected_experiments_and_selection(self):
-        results = pd.read_csv(ROOT / "resultados/experimentos_corrigidos.csv", keep_default_na=False)
+        results = pd.read_csv(ROOT / "resultados/experimentos.csv", keep_default_na=False)
         self.assertEqual(results.groupby("model").size().to_dict(), {"KNN": 4, "Tree": 4})
         self.assertTrue(results[["treino_f1_1", "teste_f1_1", "cv_f1"]].notna().all().all())
         selection = json.loads((ROOT / "resultados/parametros_selecionados.json").read_text())["selecionados"]
@@ -124,7 +124,7 @@ class OutputContracts(unittest.TestCase):
         self.assertFalse((d.person_emp_length >= d.person_age).any())
         self.assertTrue(np.isfinite(d.comprometimento_renda).all())
         np.testing.assert_allclose(d.comprometimento_renda, d.loan_amnt/d.person_income*100)
-        final = pd.read_csv(ROOT / "resultados/avaliacao_corrigida.csv")
+        final = pd.read_csv(ROOT / "resultados/avaliacao_teste.csv")
         from sklearn.metrics import confusion_matrix, f1_score
         for row in final.itertuples():
             pred = pd.read_csv(ROOT / f"resultados/avaliacao_final/{row.prefix}_predicoes.csv")
@@ -134,7 +134,7 @@ class OutputContracts(unittest.TestCase):
             self.assertEqual(len(pred), 6483)
 
     def test_finance_reads_current_counts(self):
-        final = pd.read_csv(ROOT / "resultados/avaliacao_corrigida.csv").set_index("model")
+        final = pd.read_csv(ROOT / "resultados/avaliacao_teste.csv").set_index("model")
         costs = pd.read_csv(ROOT / "resultados/avaliacao_final/simulacao_financeira_custos.csv").set_index("model")
         np.testing.assert_array_equal(final.fp, costs.fp)
         np.testing.assert_array_equal(final.fn, costs.fn)
@@ -151,7 +151,7 @@ class OutputContracts(unittest.TestCase):
         stored = pd.read_csv(ROOT / "resultados/avaliacao_final/feature_importance_arvore.csv").set_index("feature")
         actual = pd.Series(model.feature_importances_, index=[n.split("__",1)[1] for n in names])
         np.testing.assert_allclose(stored.importance.reindex(actual.index), actual, atol=1e-12)
-        row = pd.read_csv(ROOT / "resultados/avaliacao_corrigida.csv").set_index("model").loc["Tree"]
+        row = pd.read_csv(ROOT / "resultados/avaliacao_teste.csv").set_index("model").loc["Tree"]
         pred = pd.read_csv(ROOT / f"resultados/avaliacao_final/{row.prefix}_predicoes.csv")
         np.testing.assert_array_equal(model.predict(matrices["Tree"][2]), pred.previsto)
 
