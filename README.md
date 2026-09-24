@@ -26,7 +26,7 @@ valores de empréstimo extremos foram identificados via boxplot (IQR) e mantidos
 raros, porém plausíveis; o balanceamento das classes, restrito ao treino, usa Random
 Over-Sampling (reamostragem com reposição da classe minoritária).
 
-**Veredito: Árvore de Decisão (configuração 7) em produção.** O erro mais
+**Veredito: Árvore de Decisão (profundidade máxima 7) em produção.** O erro mais
 caro para o banco é o falso negativo (aprovar um inadimplente e perder o valor emprestado).
 Ainda assim a árvore sai mais barata: comete 15 FN a mais que o KNN, mas
 772 FP a menos. A árvore tem menor custo se custo_FN/custo_FP for menor que 51,467; no ponto há empate. Na relação oposta, o KNN tem menor custo. Justificativa completa em
@@ -56,13 +56,15 @@ descritos e exibidos nos documentos indicados na tabela abaixo.
 
 ## Onde encontrar a resposta de cada pergunta
 
-| Pergunta | Onde está respondida |
-| --- | --- |
-| Qual base e qual o objetivo de negócio? | Este README, parágrafos acima |
-| Que insights a EDA revelou? | `documentacao/01_eda_e_preparacao.md`, Seção 1 |
-| Como nulos e outliers foram tratados, e o impacto no KNN/Árvore? | `documentacao/01_eda_e_preparacao.md`, Seções 1 e 2 |
-| Como o overfitting foi identificado e evitado? | `documentacao/02_modelagem.md` |
-| Qual modelo colocar em produção, olhando a matriz de confusão? | `documentacao/03_avaliacao_e_veredito.md` |
+| Pergunta | Onde está respondida | Notebook |
+| --- | --- | --- |
+| Qual base e qual o objetivo de negócio? | Este README, parágrafos acima | — |
+| Etapa 1 — Que insights a EDA revelou? | `documentacao/01_eda_e_preparacao.md`, Seção 1 | célula 5 |
+| Etapa 2 — Como nulos e outliers foram tratados, e o impacto no KNN/Árvore? | `documentacao/01_eda_e_preparacao.md`, Seção 2 | célula 8 |
+| Etapa 3 — Como `comprometimento_renda` foi calculada sem dividir por zero ou por valores inválidos? | `documentacao/01_eda_e_preparacao.md`, Seção 3 | célula 10 |
+| Etapa 4 — Como o split, o balanceamento e a escala evitam vazamento entre treino e teste? | `documentacao/01_eda_e_preparacao.md`, Seção 4 | célula 12 |
+| Etapa 5 — Como o overfitting foi identificado e evitado? | `documentacao/02_modelagem.md` | célula 16 |
+| Etapa 6 — Qual modelo colocar em produção, olhando a matriz de confusão? | `documentacao/03_avaliacao_e_veredito.md` | célula 19 |
 
 ## Reprodução
 
@@ -123,7 +125,7 @@ python3 -m unittest discover -s tests -v
 - `documentacao/01_eda_e_preparacao.md`: EDA, limpeza, outliers, engenharia de atributos e separação/balanceamento (Etapas 1 a 4).
 - `documentacao/02_modelagem.md`: experimentos de K e profundidade, diagnóstico de overfitting (Etapa 5).
 - `documentacao/03_avaliacao_e_veredito.md`: matrizes, custos e veredito de negócio (Etapa 6).
-- `resultados/experimentos_corrigidos.csv`: treino, validação e teste das oito configurações.
+- `resultados/experimentos.csv`: treino, validação e teste das oito configurações.
 - `resultados/parametros_selecionados.json`: seleção anterior às predições de teste.
 - `resultados/auditoria_execucao.json`: origem das partições, preservação e versões.
 - `resultados/avaliacao_final/`: relatórios, predições, matrizes e importância da árvore avaliada.
@@ -146,7 +148,7 @@ Fonte da base de dados:
 
 ## Limitações
 
-O teste e a base completa já foram consultados durante o desenvolvimento anterior. A correção mantém a semente e a divisão e não usa o teste na seleção atual, mas não recupera a independência de um conjunto externo intocado.
+O teste só é usado depois que os hiperparâmetros são escolhidos por validação cruzada (5 dobras, só no treino). Como a base completa foi examinada durante o desenvolvimento deste projeto, o teste não tem a independência de uma amostra nunca vista antes; a seleção, porém, não consulta o teste em nenhuma etapa.
 
 As classes não possuem datas para validação temporal; a disponibilidade prévia de juros
 e classificação de risco precisa ser confirmada. Custos monetários são hipóteses ilustrativas.

@@ -1,28 +1,28 @@
 # EDA e preparação dos dados
 
-Este arquivo é escrito em duas etapas por dois scripts diferentes: a Seção 1 por `notebooks/02_eda_graficos.py` (lendo o CSV original) e as Seções 2 a 4 por `notebooks/pipeline_credito.py`, via `relatorios_credito.write_reports` (lendo a base já limpa). Rodar `notebooks/03_executar_pipeline.py` executa as duas etapas em sequência e produz o arquivo completo; rodar só este script deixa as Seções 2 a 4 como estavam.
+Gerado por `notebooks/03_executar_pipeline.py` (ver "Reprodução" no README para a ordem completa).
 
 ## 1. Análise exploratória (EDA)
 
 ### Distribuição do alvo
 
-A inadimplência representa 21.82% dos registros. Há diferença relevante entre as classes; o split deverá preservar a proporção e a avaliação usará recall, precisão e F1 além da acurácia. O balanceamento, quando aplicado, ficará restrito ao treino.
+A inadimplência representa 21,82% dos registros. Há diferença relevante entre as classes; o split deverá preservar a proporção e a avaliação usará recall, precisão e F1 além da acurácia. O balanceamento, quando aplicado, ficará restrito ao treino.
 
 ### Renda anual
 
-A mediana da renda é 60,000 para contratos em dia e 41,498 para contratos inadimplentes. O histograma usa intervalos comuns e eixo logarítmico, sem remover registros. Cada classe é normalizada separadamente; a altura mostra sua fração no intervalo. Valores altos não demonstram erro por si sós.
+A mediana da renda é 60.000 para contratos em dia e 41.498 para contratos inadimplentes. O histograma usa intervalos comuns e eixo logarítmico, sem remover registros. Cada classe é normalizada separadamente; a altura mostra sua fração no intervalo. Valores altos não demonstram erro por si sós.
 
 ### Comprometimento da renda
 
-As medianas de `loan_percent_income` são 0.130 para a classe 0 e 0.240 para a classe 1. A correlação de Pearson com o alvo é 0.379; isso é associação descritiva, não causalidade.
+As medianas de `loan_percent_income` são 0,130 para a classe 0 e 0,240 para a classe 1. A correlação de Pearson com o alvo é 0,379; isso é associação descritiva, não causalidade.
 
 ### Outliers: renda e valor do empréstimo
 
 O critério de referência é o limite superior do boxplot (Q3 + 1,5×IQR), usado só para
-visualizar a cauda, não como regra de exclusão. Por esse critério, 1,484
-registros de `person_income` ficam acima de 140,250 e
-1,689 registros de `loan_amnt` ficam acima de
-23,000. O gráfico 06 mostra essas caudas por status, em escala
+visualizar a cauda, não como regra de exclusão. Por esse critério, 1.484
+registros de `person_income` ficam acima de 140.250 e
+1.689 registros de `loan_amnt` ficam acima de
+23.000. O gráfico 06 mostra essas caudas por status, em escala
 logarítmica. A decisão (seção 2 abaixo) é manter esses valores: são extremos raros e
 plausíveis (rendas e empréstimos altos existem), não erros de digitação como as idades de
 123/144 anos. Essa manutenção pesa mais no KNN, sensível a distâncias euclidianas mesmo após
@@ -30,11 +30,11 @@ o StandardScaler, do que na árvore, que corta por limiar e é robusta à magnit
 
 ### Valores ausentes
 
-`person_emp_length` tem 895 valores ausentes e `loan_int_rate` tem 3,116. A mediana será usada para o tempo de emprego porque a distribuição é assimétrica; a média será usada para a taxa porque média e mediana são próximas. Esses valores são aprendidos somente no treino de cada dobra, depois do split.
+`person_emp_length` tem 895 valores ausentes e `loan_int_rate` tem 3.116. A mediana será usada para o tempo de emprego porque a distribuição é assimétrica; a média será usada para a taxa porque média e mediana são próximas. Esses valores são aprendidos somente no treino de cada dobra, depois do split.
 
 ### Correlações e próximos passos
 
-A correlação entre `loan_status` e `loan_int_rate` é 0.335. Correlação não determina exclusão automática nem causalidade. A preparação (seções 2 a 4) remove repetições exatas e idades de 123/144 anos, invalida dois tempos de emprego impossíveis, mantém rendas extremas plausíveis, substitui a razão redundante pela coluna exigida e aprende imputadores somente no treino. Esta EDA descreve toda a base; não é uma análise cega de holdout.
+A correlação entre `loan_status` e `loan_int_rate` é 0,335. Correlação não determina exclusão automática nem causalidade. A preparação (seções 2 a 4) remove repetições exatas e idades de 123/144 anos, invalida dois tempos de emprego impossíveis, mantém rendas extremas plausíveis, substitui a razão redundante pela coluna exigida e aprende imputadores somente no treino. Esta EDA descreve toda a base; não é uma análise cega de holdout.
 
 As figuras ficam em `resultados/graficos_eda/`. O gráfico 05 resume os nulos observados antes da imputação e o gráfico 06 mostra os outliers de renda e valor do empréstimo por status. Os CSVs foram apenas lidos e tiveram seus hashes conferidos antes e depois da execução.
 
@@ -58,10 +58,10 @@ A base ficou com 32411 linhas.
 
 ### Estatísticas somente do treino
 
-| index | mean | median | skew | nulos |
+| Variável | Média | Mediana | Assimetria | Nulos |
 | --- | --- | --- | --- | --- |
-| person_emp_length | 4.7784 | 4.0000 | 1.2259 | 717 |
-| loan_int_rate | 11.0133 | 10.9900 | 0.2014 | 2482 |
+| person_emp_length | 4,7784 | 4,0000 | 1,2259 | 717 |
+| loan_int_rate | 11,0133 | 10,9900 | 0,2014 | 2.482 |
 
 Tempo de emprego: mediana, porque a cauda direita permanece após corrigir os erros;
 a mediana é menos influenciada por valores altos. Taxa de juros: média, porque média e
@@ -89,8 +89,8 @@ em vez de imputar globalmente; eventual imputação deve ocorrer somente no trei
 
 loan_percent_income está em proporção; comprometimento_renda está em percentual.
 A diferença mediana entre as duas, na mesma unidade, é
-0.2500 ponto percentual.
-98.68% das linhas diferem em até 0,5001 ponto.
+0,2500 ponto percentual.
+98,68% das linhas diferem em até 0,5001 ponto.
 A versão original é retirada dos preditores para evitar peso redundante no KNN.
 Não se trata de colinearidade estrita comprovada.
 
@@ -124,4 +124,4 @@ e de preservação dos registros nas cinco dobras e no ajuste final.
 
 ### Limitação conhecida
 
-O teste e a base completa já foram consultados durante o desenvolvimento anterior. A correção mantém a semente e a divisão e não usa o teste na seleção atual, mas não recupera a independência de um conjunto externo intocado.
+O teste só é usado depois que os hiperparâmetros são escolhidos por validação cruzada (5 dobras, só no treino). Como a base completa foi examinada durante o desenvolvimento deste projeto, o teste não tem a independência de uma amostra nunca vista antes; a seleção, porém, não consulta o teste em nenhuma etapa.

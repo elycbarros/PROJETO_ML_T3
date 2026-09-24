@@ -1,6 +1,5 @@
 {
   "hashes_originais": {
-    "E Commerce Dataset - E Comm.csv": "3341cb35ac6c76a8c96e0e7a2cffbca1af99dd9aeb3498f67532477adaf880ae",
     "credit_risk_dataset.csv": "ce3c6d2167717bf1627d1c0c81cbccd28323cd4aa7b96d542599366d5ff6aac8"
   },
   "folds": [
@@ -185,15 +184,15 @@
       "oversampling_sha256": "51bb7183735d1dc917ef80efbc1a2dbbf903c84ce542b029983328c8415d89f5"
     }
   ],
-  "selection_sha256": "cd6d58a6a5f7ce3dd6b31d6ff5fa1f1024d0ca4ae41659cd75d0ebf8eee343a1",
+  "selection_sha256": "6be775892df8d4ac00c12745a83cf255590c68d338a7096aef62a649b18c9581",
   "configuration_count": 8,
   "test_consulted_only_after_selection_this_run": true,
-  "historical_test_exposure": "O teste e a base completa já foram consultados durante o desenvolvimento anterior. A correção mantém a semente e a divisão e não usa o teste na seleção atual, mas não recupera a independência de um conjunto externo intocado.",
-  "python": "3.14.6",
+  "historical_test_exposure": "O teste só é usado depois que os hiperparâmetros são escolhidos por validação cruzada (5 dobras, só no treino). Como a base completa foi examinada durante o desenvolvimento deste projeto, o teste não tem a independência de uma amostra nunca vista antes; a seleção, porém, não consulta o teste em nenhuma etapa.",
+  "python": "3.11.15",
   "versions": {
-    "numpy": "2.4.2",
-    "pandas": "3.0.5",
-    "scikit-learn": "1.9.0",
-    "matplotlib": "3.11.1"
+    "numpy": "2.4.4",
+    "pandas": "3.0.2",
+    "scikit-learn": "1.8.0",
+    "matplotlib": "3.10.9"
   }
 }
