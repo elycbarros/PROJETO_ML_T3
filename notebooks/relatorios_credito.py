@@ -9,13 +9,28 @@ verificação complementar em 03_avaliacao_e_veredito.md é opcional e só apare
 preenchida depois de rodar notebooks/04_analise_complementar.py.
 """
 import json
+import numpy as np
 import pandas as pd
 
 
-def table(frame):
+MODEL_LABELS = {"KNN": "KNN", "Tree": "Árvore"}
+
+
+def table(frame, rename=None):
+    """Formata um DataFrame como tabela markdown, em português: vírgula decimal,
+    separador de milhar e cabeçalhos traduzidos (via `rename`). Valores 'KNN'/'Tree'
+    na coluna 'model' viram 'KNN'/'Árvore'."""
+    frame = frame.copy()
+    if "model" in frame.columns:
+        frame["model"] = frame["model"].map(MODEL_LABELS).fillna(frame["model"])
+    if rename:
+        frame = frame.rename(columns=rename)
+
     def cell(value):
         if isinstance(value, float):
-            return f"{value:.4f}"
+            return f"{value:,.4f}".replace(",", "_").replace(".", ",").replace("_", ".")
+        if isinstance(value, (int, np.integer)) and abs(value) >= 1000:
+            return f"{value:,}".replace(",", ".")
         return str(value)
     rows = ["| " + " | ".join(map(str, frame.columns)) + " |",
             "| " + " | ".join(["---"] * len(frame.columns)) + " |"]
@@ -80,10 +95,18 @@ def write_reports(root, data, stats, experiments, final, finance, selection, lim
     preferred = finance.sort_values("custo_total_hipotetico").iloc[0]["model"]
     preferred_row = final.loc[final.model == preferred].iloc[0]
     preferred_name = "Árvore de Decisão" if preferred == "Tree" else "KNN"
+    preferred_label = (
+        f"profundidade máxima {preferred_row.param}" if preferred == "Tree"
+        else f"K = {preferred_row.param}"
+    )
     benefit = abs(int(finance.iloc[0].custo_total_hipotetico - finance.iloc[1].custo_total_hipotetico))
     benefit_br = f"{benefit:,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
     summary_table = table(final[["model", "param", "test_accuracy", "test_precision_1",
-                                "test_recall_1", "test_f1_1", "fp", "fn"]])
+                                "test_recall_1", "test_f1_1", "fp", "fn"]], rename={
+        "model": "Modelo", "param": "Parâmetro", "test_accuracy": "Acurácia",
+        "test_precision_1": "Precisão (1)", "test_recall_1": "Recall (1)",
+        "test_f1_1": "F1 (1)", "fp": "FP", "fn": "FN",
+    })
     def pct(value):
         return f"{value:.2%}".replace(".", ",")
     def decimal(value):
@@ -104,13 +127,12 @@ def write_reports(root, data, stats, experiments, final, finance, selection, lim
         *readme_rows,
     ])
     stat_table = table(stats.loc[["person_emp_length", "loan_int_rate"],
-                                 ["mean", "median", "skew", "nulos"]].reset_index())
+                                 ["mean", "median", "skew", "nulos"]].reset_index(), rename={
+        "index": "Variável", "mean": "Média", "median": "Mediana",
+        "skew": "Assimetria", "nulos": "Nulos",
+    })
     top = pd.read_csv(root / "resultados/avaliacao_final/feature_importance_arvore.csv").head(5)
-    top_table = table(top)
-    stale_note = (
-        "Este documento foi regenerado pelo pipeline vigente. Resultados anteriores "
-        "permanecem no histórico Git e não descrevem os resultados atuais."
-    )
+    top_table = table(top, rename={"feature": "Variável", "importance": "Importância"})
 
     # ---- 01_eda_e_preparacao.md: seções 2 a 4 (a seção 1 é escrita por 02_eda_graficos.py) ----
     secoes_2_a_4 = f"""## 2. Limpeza e imputação
@@ -161,8 +183,8 @@ em vez de imputar globalmente; eventual imputação deve ocorrer somente no trei
 
 loan_percent_income está em proporção; comprometimento_renda está em percentual.
 A diferença mediana entre as duas, na mesma unidade, é
-{feature['erro_mediano_pontos_percentuais']:.4f} ponto percentual.
-{100*feature['fracao_dentro_meio_ponto_percentual']:.2f}% das linhas diferem em até 0,5001 ponto.
+{decimal(feature['erro_mediano_pontos_percentuais'])} ponto percentual.
+{pct(feature['fracao_dentro_meio_ponto_percentual'])} das linhas diferem em até 0,5001 ponto.
 A versão original é retirada dos preditores para evitar peso redundante no KNN.
 Não se trata de colinearidade estrita comprovada.
 
@@ -211,53 +233,55 @@ e de preservação dos registros nas cinco dobras e no ajuste final.
         winner = e.loc[e.selecionado].iloc[0]
         columns = ["param", "train_f1_1_mean", "cv_f1", "cv_std", "treino_f1_1",
                    "teste_f1_1", "gap_f1"]
+        column_labels = {
+            "param": "Parâmetro", "train_f1_1_mean": "F1 treino (CV)",
+            "cv_f1": "F1 validação (CV)", "cv_std": "Desvio (CV)",
+            "treino_f1_1": "F1 treino (final)", "teste_f1_1": "F1 teste (final)",
+            "gap_f1": "Gap treino→teste (final)",
+        }
         most_complex = e.iloc[-1]
+        curve_file = "curva_validacao_knn" if kind == "KNN" else "curva_overfitting_arvore"
         if kind == "KNN":
             diagnosis = (
-                f"No KNN, K=3 teve F1 médio de treino {e.iloc[0].train_f1_1_mean:.4f} e "
-                f"F1 de validação {e.iloc[0].cv_f1:.4f}, um gap de {e.iloc[0].cv_gap_f1:.4f}. "
-                f"Com K=9, o F1 de treino caiu para {winner.train_f1_1_mean:.4f}, mas o F1 "
-                f"de validação subiu para {winner.cv_f1:.4f} e o gap caiu para "
-                f"{winner.cv_gap_f1:.4f}. Por isso K=9 foi escolhido: ele generalizou melhor "
+                f"No KNN, K=3 teve F1 médio de treino {decimal(e.iloc[0].train_f1_1_mean)} e "
+                f"F1 de validação {decimal(e.iloc[0].cv_f1)}, um gap de {decimal(e.iloc[0].cv_gap_f1)}. "
+                f"Com K=9, o F1 de treino caiu para {decimal(winner.train_f1_1_mean)}, mas o F1 "
+                f"de validação subiu para {decimal(winner.cv_f1)} e o gap caiu para "
+                f"{decimal(winner.cv_gap_f1)}. Por isso K=9 foi escolhido: ele generalizou melhor "
                 "entre os quatro valores testados, apesar de a diferença de validação ser pequena."
             )
         else:
             diagnosis = (
                 f"Na árvore sem limite de profundidade, o F1 de treino chegou a "
-                f"{most_complex.train_f1_1_mean:.4f}, enquanto o F1 de validação foi "
-                f"{most_complex.cv_f1:.4f}; o gap de {most_complex.cv_gap_f1:.4f} é o sinal "
+                f"{decimal(most_complex.train_f1_1_mean)}, enquanto o F1 de validação foi "
+                f"{decimal(most_complex.cv_f1)}; o gap de {decimal(most_complex.cv_gap_f1)} é o sinal "
                 "mais claro de memorização. A profundidade 7 manteve F1 de treino "
-                f"{winner.train_f1_1_mean:.4f}, obteve o maior F1 de validação "
-                f"({winner.cv_f1:.4f}) e reduziu o gap para {winner.cv_gap_f1:.4f}."
+                f"{decimal(winner.train_f1_1_mean)}, obteve o maior F1 de validação "
+                f"({decimal(winner.cv_f1)}) e reduziu o gap para {decimal(winner.cv_gap_f1)}."
             )
         return f"""## {titulo}
 
-{table(e[columns])}
+{table(e[columns], rename=column_labels)}
 
-train_f1_1_mean mede o treino original de cada dobra; cv_f1 mede sua validação.
-treino_f1_1 é medido no treino original completo, sem repetições do balanceamento.
-As métricas de teste de todas as configurações permitem uma comparação descritiva,
-mas são calculadas somente depois de persistir os parâmetros selecionados. A coluna
-gap_f1 da tabela é treino_f1_1 menos teste_f1_1 (treino vs. teste); é diferente do
-"gap treino-validação" discutido abaixo, que compara train_f1_1_mean com cv_f1
-(treino vs. validação, usado para escolher a configuração antes de tocar no teste).
+As duas primeiras colunas de F1 (treino e validação) vêm da validação cruzada em 5
+dobras, feita só no treino, antes de tocar no teste — é nelas que a seleção se baseia.
+As três últimas (treino, teste e o gap entre eles) vêm do ajuste final, feito depois da
+seleção, e servem só para descrever o resultado no teste; não influenciam a escolha.
 
-A seleção foi {winner.param}, com F1 médio de validação {winner.cv_f1:.4f}.
+A seleção foi {winner.param}, com F1 médio de validação {decimal(winner.cv_f1)}.
 Usamos o maior F1 médio; em empate exato, K maior no KNN e menor profundidade na árvore.
 
-O intervalo observado do gap treino-validação é {e.cv_gap_f1.min():.4f} a
-{e.cv_gap_f1.max():.4f}. Quanto maior a vantagem no treino, maior o indício de ajuste excessivo;
+O intervalo observado do gap treino-validação é {decimal(e.cv_gap_f1.min())} a
+{decimal(e.cv_gap_f1.max())}. Quanto maior a vantagem no treino, maior o indício de ajuste excessivo;
 não aplicamos um limite arbitrário para eliminar modelos.
 
 ### Diagnóstico de overfitting
 
 {diagnosis}
 
-O gráfico de treino, validação e teste está em resultados/avaliacao_final/.
+![Curva de treino, validação e teste — {titulo}](../resultados/avaliacao_final/{curve_file}.png)
 """
     write("02_modelagem.md", f"""# Modelagem: KNN e Árvore de Decisão
-
-{stale_note}
 
 Testamos 4 valores de K no KNN (3, 5, 7, 9) e 4 profundidades na árvore (3, 5, 7 e
 ilimitada), sempre comparando F1 de treino contra F1 de validação em 5 dobras
@@ -268,7 +292,11 @@ estratificadas, para diagnosticar overfitting antes de tocar no teste.
 """)
 
     # ---- 03_avaliacao_e_veredito.md ----
-    financial = table(finance)
+    financial = table(finance, rename={
+        "model": "Modelo", "param": "Parâmetro", "fp": "FP", "fn": "FN",
+        "custo_fp_hipotetico": "Custo FP (R$)", "custo_fn_hipotetico": "Custo FN (R$)",
+        "custo_total_hipotetico": "Custo total (R$)",
+    })
     avaliacao = f"""## Avaliação final
 
 {summary_table}
@@ -279,11 +307,8 @@ decisão efetiva de conceder ou recusar crédito.
 
 ### Comparação de erros
 
-{cost_verdict}
-
-A árvore trocou 772 falsos positivos a menos por 15 falsos negativos a mais em relação ao
-KNN. Assim, a árvore é preferível enquanto um falso negativo custar menos de 51,467 vezes
-um falso positivo. Se essa relação de custos for maior, o KNN passa a ter menor custo.
+Em relação ao KNN, a árvore comete {abs(delta_fn)} FN {"a mais" if delta_fn > 0 else "a menos"}
+e {abs(delta_fp)} FP {"a menos" if delta_fp < 0 else "a mais"}. {cost_verdict}
 
 ### Cenário de custos ilustrativos
 
@@ -304,15 +329,14 @@ leva ao prejuízo do valor emprestado. Um falso positivo (bom pagador recusado) 
 receita de juros daquele contrato e o relacionamento com o cliente, mas não o capital.
 Por isso, no cenário ilustrativo, um FN custa 5 vezes mais que um FP.
 
-**Veredito: colocaria em produção a {preferred_name} (configuração {preferred_row.param}).**
-Mesmo com o FN sendo o erro mais caro, a árvore sai mais barata: ela comete
-{abs(delta_fn)} FN {"a mais" if delta_fn > 0 else "a menos"} que o KNN, mas
-{abs(delta_fp)} FP {"a menos" if delta_fp < 0 else "a mais"}. {cost_verdict} Para o KNN
-compensar, a perda de um calote teria de valer dezenas de vezes a margem perdida ao recusar
-um bom pagador, o que é pouco plausível: a perda máxima de um FN é o próprio valor
-emprestado. Por isso a vantagem da árvore resiste à incerteza sobre os custos reais. Ela também tem o maior F1 no teste
-({preferred_row.test_f1_1:.4f}) e a maior precisão, o que reduz recusas injustas de bons
-pagadores. Os parâmetros foram escolhidos só por validação interna, antes do teste.
+**Veredito: colocaria em produção a {preferred_name} ({preferred_label}).** Mesmo com o
+FN sendo o erro mais caro, ela sai mais barata pelos números já mostrados acima. Para o
+KNN compensar, a perda de um calote teria de valer dezenas de vezes a margem perdida ao
+recusar um bom pagador, o que é pouco plausível: a perda máxima de um FN é o próprio valor
+emprestado. Por isso a vantagem da árvore resiste à incerteza sobre os custos reais. Ela
+também tem o maior F1 no teste ({decimal(preferred_row.test_f1_1)}) e a maior precisão, o que
+reduz recusas injustas de bons pagadores. Os parâmetros foram escolhidos só por validação
+interna, antes do teste.
 
 Antes do uso real, o banco deve confirmar os custos efetivos de cada erro e se juros e
 classificação de risco estão disponíveis no momento da decisão (ver Limitações).
@@ -397,7 +421,7 @@ valores de empréstimo extremos foram identificados via boxplot (IQR) e mantidos
 raros, porém plausíveis; o balanceamento das classes, restrito ao treino, usa Random
 Over-Sampling (reamostragem com reposição da classe minoritária).
 
-**Veredito: {preferred_name} (configuração {preferred_row.param}) em produção.** O erro mais
+**Veredito: {preferred_name} ({preferred_label}) em produção.** O erro mais
 caro para o banco é o falso negativo (aprovar um inadimplente e perder o valor emprestado).
 Ainda assim a árvore sai mais barata: comete {abs(delta_fn)} FN {"a mais" if delta_fn > 0 else "a menos"} que o KNN, mas
 {abs(delta_fp)} FP {"a menos" if delta_fp < 0 else "a mais"}. {cost_verdict} Justificativa completa em
@@ -427,13 +451,15 @@ descritos e exibidos nos documentos indicados na tabela abaixo.
 
 ## Onde encontrar a resposta de cada pergunta
 
-| Pergunta | Onde está respondida |
-| --- | --- |
-| Qual base e qual o objetivo de negócio? | Este README, parágrafos acima |
-| Que insights a EDA revelou? | `documentacao/01_eda_e_preparacao.md`, Seção 1 |
-| Como nulos e outliers foram tratados, e o impacto no KNN/Árvore? | `documentacao/01_eda_e_preparacao.md`, Seções 1 e 2 |
-| Como o overfitting foi identificado e evitado? | `documentacao/02_modelagem.md` |
-| Qual modelo colocar em produção, olhando a matriz de confusão? | `documentacao/03_avaliacao_e_veredito.md` |
+| Pergunta | Onde está respondida | Notebook |
+| --- | --- | --- |
+| Qual base e qual o objetivo de negócio? | Este README, parágrafos acima | — |
+| Etapa 1 — Que insights a EDA revelou? | `documentacao/01_eda_e_preparacao.md`, Seção 1 | célula 5 |
+| Etapa 2 — Como nulos e outliers foram tratados, e o impacto no KNN/Árvore? | `documentacao/01_eda_e_preparacao.md`, Seção 2 | célula 8 |
+| Etapa 3 — Como `comprometimento_renda` foi calculada sem dividir por zero ou por valores inválidos? | `documentacao/01_eda_e_preparacao.md`, Seção 3 | célula 10 |
+| Etapa 4 — Como o split, o balanceamento e a escala evitam vazamento entre treino e teste? | `documentacao/01_eda_e_preparacao.md`, Seção 4 | célula 12 |
+| Etapa 5 — Como o overfitting foi identificado e evitado? | `documentacao/02_modelagem.md` | célula 16 |
+| Etapa 6 — Qual modelo colocar em produção, olhando a matriz de confusão? | `documentacao/03_avaliacao_e_veredito.md` | célula 19 |
 
 ## Reprodução
 
@@ -478,7 +504,7 @@ python3 -m unittest discover -s tests -v
 - `documentacao/01_eda_e_preparacao.md`: EDA, limpeza, outliers, engenharia de atributos e separação/balanceamento (Etapas 1 a 4).
 - `documentacao/02_modelagem.md`: experimentos de K e profundidade, diagnóstico de overfitting (Etapa 5).
 - `documentacao/03_avaliacao_e_veredito.md`: matrizes, custos e veredito de negócio (Etapa 6).
-- `resultados/experimentos_corrigidos.csv`: treino, validação e teste das oito configurações.
+- `resultados/experimentos.csv`: treino, validação e teste das oito configurações.
 - `resultados/parametros_selecionados.json`: seleção anterior às predições de teste.
 - `resultados/auditoria_execucao.json`: origem das partições, preservação e versões.
 - `resultados/avaliacao_final/`: relatórios, predições, matrizes e importância da árvore avaliada.
