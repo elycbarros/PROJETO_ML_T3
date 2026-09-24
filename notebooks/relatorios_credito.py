@@ -439,6 +439,10 @@ preditores (Seção 3), em vez de mantida como informação duplicada. Além dis
 problema de decisão binária com custo assimétrico direto entre os dois tipos de erro (FP e
 FN), o que conecta naturalmente cada etapa técnica à análise de negócio da Etapa 6.
 
+Os números desta tabela e a verificação da redundância de `loan_percent_income` são
+reproduzidos ao vivo, célula por célula, em `notebooks/00_comparacao_bases.ipynb`
+— não foram apenas digitados aqui.
+
 ## Resumo executivo
 
 Métricas no teste; a classe 1 é inadimplência. FP é um bom pagador marcado como risco;
