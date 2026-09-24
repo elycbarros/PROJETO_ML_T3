@@ -237,7 +237,10 @@ e de preservação dos registros nas cinco dobras e no ajuste final.
 train_f1_1_mean mede o treino original de cada dobra; cv_f1 mede sua validação.
 treino_f1_1 é medido no treino original completo, sem repetições do balanceamento.
 As métricas de teste de todas as configurações permitem uma comparação descritiva,
-mas são calculadas somente depois de persistir os parâmetros selecionados.
+mas são calculadas somente depois de persistir os parâmetros selecionados. A coluna
+gap_f1 da tabela é treino_f1_1 menos teste_f1_1 (treino vs. teste); é diferente do
+"gap treino-validação" discutido abaixo, que compara train_f1_1_mean com cv_f1
+(treino vs. validação, usado para escolher a configuração antes de tocar no teste).
 
 A seleção foi {winner.param}, com F1 médio de validação {winner.cv_f1:.4f}.
 Usamos o maior F1 médio; em empate exato, K maior no KNN e menor profundidade na árvore.
@@ -294,13 +297,25 @@ Custo hipotético = FP × custo_FP + FN × custo_FN.
 A diferença de R$ {benefit_br} vale apenas para essas contagens e essas hipóteses.
 Não é economia realizada, receita prevista ou prova de redução efetiva da inadimplência.
 
-### Recomendação
+### Veredito: qual erro custa mais e qual modelo vai para produção
 
-Recomendaria {preferred_name}, configuração {preferred_row.param}, como candidato a um
-piloto de apoio à análise neste cenário. Seu F1 de teste é {preferred_row.test_f1_1:.4f}.
-Os parâmetros de cada família foram selecionados somente por validação interna.
-O custo real, a estabilidade temporal e a disponibilidade das variáveis no momento
-da previsão precisam ser definidos antes de uso operacional.
+**O erro mais caro é o falso negativo (FN).** Um inadimplente aprovado como "seguro"
+leva ao prejuízo do valor emprestado. Um falso positivo (bom pagador recusado) custa a
+receita de juros daquele contrato e o relacionamento com o cliente, mas não o capital.
+Por isso, no cenário ilustrativo, um FN custa 5 vezes mais que um FP.
+
+**Veredito: colocaria em produção a {preferred_name} (configuração {preferred_row.param}).**
+Mesmo com o FN sendo o erro mais caro, a árvore sai mais barata: ela comete
+{abs(delta_fn)} FN {"a mais" if delta_fn > 0 else "a menos"} que o KNN, mas
+{abs(delta_fp)} FP {"a menos" if delta_fp < 0 else "a mais"}. {cost_verdict} Para o KNN
+compensar, a perda de um calote teria de valer dezenas de vezes a margem perdida ao recusar
+um bom pagador, o que é pouco plausível: a perda máxima de um FN é o próprio valor
+emprestado. Por isso a vantagem da árvore resiste à incerteza sobre os custos reais. Ela também tem o maior F1 no teste
+({preferred_row.test_f1_1:.4f}) e a maior precisão, o que reduz recusas injustas de bons
+pagadores. Os parâmetros foram escolhidos só por validação interna, antes do teste.
+
+Antes do uso real, o banco deve confirmar os custos efetivos de cada erro e se juros e
+classificação de risco estão disponíveis no momento da decisão (ver Limitações).
 
 ### Importância das variáveis
 
@@ -337,8 +352,7 @@ projeto (notebooks/03_executar_pipeline.py e notebooks/pipeline_completo.ipynb).
 - Simulação financeira calculada a partir das contagens geradas, sem números fixados.
 - Este arquivo é regenerado a partir dos mesmos resultados a cada execução do pipeline.
 
-{limitation}
-
+A limitação de dependência do teste histórico está detalhada na seção "Limitações" acima.
 A auditoria detalhada está em resultados/auditoria_execucao.json. Os testes de regressão
 ficam em tests/test_pipeline.py.
 """
@@ -383,8 +397,11 @@ valores de empréstimo extremos foram identificados via boxplot (IQR) e mantidos
 raros, porém plausíveis; o balanceamento das classes, restrito ao treino, usa Random
 Over-Sampling (reamostragem com reposição da classe minoritária).
 
-O candidato recomendado no cenário ilustrativo é {preferred_name}, configuração
-{preferred_row.param}. {cost_verdict}
+**Veredito: {preferred_name} (configuração {preferred_row.param}) em produção.** O erro mais
+caro para o banco é o falso negativo (aprovar um inadimplente e perder o valor emprestado).
+Ainda assim a árvore sai mais barata: comete {abs(delta_fn)} FN {"a mais" if delta_fn > 0 else "a menos"} que o KNN, mas
+{abs(delta_fp)} FP {"a menos" if delta_fp < 0 else "a mais"}. {cost_verdict} Justificativa completa em
+`documentacao/03_avaliacao_e_veredito.md`.
 
 ### Principais gráficos
 

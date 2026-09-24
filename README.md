@@ -26,8 +26,11 @@ valores de empréstimo extremos foram identificados via boxplot (IQR) e mantidos
 raros, porém plausíveis; o balanceamento das classes, restrito ao treino, usa Random
 Over-Sampling (reamostragem com reposição da classe minoritária).
 
-O candidato recomendado no cenário ilustrativo é Árvore de Decisão, configuração
-7. A árvore tem menor custo se custo_FN/custo_FP for menor que 51,467; no ponto há empate. Na relação oposta, o KNN tem menor custo.
+**Veredito: Árvore de Decisão (configuração 7) em produção.** O erro mais
+caro para o banco é o falso negativo (aprovar um inadimplente e perder o valor emprestado).
+Ainda assim a árvore sai mais barata: comete 15 FN a mais que o KNN, mas
+772 FP a menos. A árvore tem menor custo se custo_FN/custo_FP for menor que 51,467; no ponto há empate. Na relação oposta, o KNN tem menor custo. Justificativa completa em
+`documentacao/03_avaliacao_e_veredito.md`.
 
 ### Principais gráficos
 
