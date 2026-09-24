@@ -126,7 +126,8 @@ def split_data(data):
 
 
 def oversample_indices(y, seed=SEED):
-    """Inclui cada linha original uma vez; acrescenta apenas o déficit das classes."""
+    """Random Over-Sampling: inclui cada linha original uma vez e acrescenta cópias
+    aleatórias, com reposição, apenas do déficit das classes minoritárias."""
     values = np.asarray(y)
     classes, counts = np.unique(values, return_counts=True)
     rng = np.random.default_rng(seed)

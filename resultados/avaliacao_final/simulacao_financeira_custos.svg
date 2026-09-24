@@ -42,7 +42,7 @@ L 286.007149 296.2
 L 286.007149 203.90502 
 L 81.094964 203.90502 
 z
-" clip-path="url(#p2d0a100fdf)" style="fill: #1f77b4"/>
+" clip-path="url(#p2d0a100fdf)" style="fill: #568cfb"/>
    </g>
    <g id="patch_4">
     <path d="M 337.235195 296.2 
@@ -50,7 +50,7 @@ L 542.147379 296.2
 L 542.147379 273.5548 
 L 337.235195 273.5548 
 z
-" clip-path="url(#p2d0a100fdf)" style="fill: #1f77b4"/>
+" clip-path="url(#p2d0a100fdf)" style="fill: #568cfb"/>
    </g>
    <g id="patch_5">
     <path d="M 81.094964 203.90502 
@@ -58,7 +58,7 @@ L 286.007149 203.90502
 L 286.007149 39.704762 
 L 81.094964 39.704762 
 z
-" clip-path="url(#p2d0a100fdf)" style="fill: #ff7f0e"/>
+" clip-path="url(#p2d0a100fdf)" style="fill: #f58a3d"/>
    </g>
    <g id="patch_6">
     <path d="M 337.235195 273.5548 
@@ -66,7 +66,7 @@ L 542.147379 273.5548
 L 542.147379 102.588048 
 L 337.235195 102.588048 
 z
-" clip-path="url(#p2d0a100fdf)" style="fill: #ff7f0e"/>
+" clip-path="url(#p2d0a100fdf)" style="fill: #f58a3d"/>
    </g>
    <g id="matplotlib.axis_1">
     <g id="xtick_1">
@@ -1051,7 +1051,7 @@ L 475.114062 43.478438
 L 475.114062 36.478438 
 L 455.114062 36.478438 
 z
-" style="fill: #1f77b4"/>
+" style="fill: #568cfb"/>
     </g>
     <g id="text_11">
      <!-- FP × R$ 1.000 -->
@@ -1206,7 +1206,7 @@ L 475.114062 58.479219
 L 475.114062 51.479219 
 L 455.114062 51.479219 
 z
-" style="fill: #ff7f0e"/>
+" style="fill: #f58a3d"/>
     </g>
     <g id="text_12">
      <!-- FN × R$ 5.000 -->

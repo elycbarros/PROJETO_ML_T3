@@ -5,5 +5,9 @@
   "comprometimento_mediano_em_dia": 0.13,
   "comprometimento_mediano_inadimplente": 0.24,
   "correlacao_status_comprometimento": 0.379,
-  "correlacao_status_taxa_juros": 0.335
+  "correlacao_status_taxa_juros": 0.335,
+  "outliers_renda_iqr": 1484,
+  "limite_renda_iqr": 140250.0,
+  "outliers_valor_iqr": 1689,
+  "limite_valor_iqr": 23000.0
 }
