@@ -188,11 +188,11 @@
   "configuration_count": 8,
   "test_consulted_only_after_selection_this_run": true,
   "historical_test_exposure": "O teste só é usado depois que os hiperparâmetros são escolhidos por validação cruzada (5 dobras, só no treino). Como a base completa foi examinada durante o desenvolvimento deste projeto, o teste não tem a independência de uma amostra nunca vista antes; a seleção, porém, não consulta o teste em nenhuma etapa.",
-  "python": "3.11.15",
+  "python": "3.14.6",
   "versions": {
-    "numpy": "2.4.4",
-    "pandas": "3.0.2",
-    "scikit-learn": "1.8.0",
-    "matplotlib": "3.10.9"
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.0",
+    "matplotlib": "3.11.1"
   }
 }

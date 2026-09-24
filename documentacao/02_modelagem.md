@@ -38,7 +38,7 @@ No KNN, K=3 teve F1 médio de treino 0,8444 e F1 de validação 0,5925, um gap d
 | 3 | 0,7079 | 0,7060 | 0,0093 | 0,7083 | 0,7179 | -0,0096 |
 | 5 | 0,7368 | 0,7331 | 0,0073 | 0,7280 | 0,7220 | 0,0060 |
 | 7 | 0,7715 | 0,7551 | 0,0117 | 0,7865 | 0,7674 | 0,0191 |
-| None | 1,0000 | 0,7481 | 0,0039 | 1,0000 | 0,7561 | 0,2439 |
+| None | 1,0000 | 0,7479 | 0,0057 | 1,0000 | 0,7574 | 0,2426 |
 
 As duas primeiras colunas de F1 (treino e validação) vêm da validação cruzada em 5
 dobras, feita só no treino, antes de tocar no teste — é nelas que a seleção se baseia.
@@ -49,11 +49,11 @@ A seleção foi 7, com F1 médio de validação 0,7551.
 Usamos o maior F1 médio; em empate exato, K maior no KNN e menor profundidade na árvore.
 
 O intervalo observado do gap treino-validação é 0,0018 a
-0,2519. Quanto maior a vantagem no treino, maior o indício de ajuste excessivo;
+0,2521. Quanto maior a vantagem no treino, maior o indício de ajuste excessivo;
 não aplicamos um limite arbitrário para eliminar modelos.
 
 ### Diagnóstico de overfitting
 
-Na árvore sem limite de profundidade, o F1 de treino chegou a 1,0000, enquanto o F1 de validação foi 0,7481; o gap de 0,2519 é o sinal mais claro de memorização. A profundidade 7 manteve F1 de treino 0,7715, obteve o maior F1 de validação (0,7551) e reduziu o gap para 0,0164.
+Na árvore sem limite de profundidade, o F1 de treino chegou a 1,0000, enquanto o F1 de validação foi 0,7479; o gap de 0,2521 é o sinal mais claro de memorização. A profundidade 7 manteve F1 de treino 0,7715, obteve o maior F1 de validação (0,7551) e reduziu o gap para 0,0164.
 
 ![Curva de treino, validação e teste — Árvore de Decisão (max_depth)](../resultados/avaliacao_final/curva_overfitting_arvore.png)
