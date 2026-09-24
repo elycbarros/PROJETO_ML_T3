@@ -73,9 +73,11 @@ def run():
         "| Modelo | F1 médio (classe 1) | Desvio entre dobras | Recall médio | Precisão média |",
         "| --- | ---: | ---: | ---: | ---: |",
     ]
+    def decimal_br(value, casas=4):
+        return f"{value:.{casas}f}".replace(".", ",")
     for model, row in summary.iterrows():
-        lines.append(f"| {model} | {row.f1_medio:.4f} | {row.f1_desvio:.4f} | "
-                     f"{row.recall_medio:.4f} | {row.precisao_media:.4f} |")
+        lines.append(f"| {model} | {decimal_br(row.f1_medio)} | {decimal_br(row.f1_desvio)} | "
+                     f"{decimal_br(row.recall_medio)} | {decimal_br(row.precisao_media)} |")
     full_f1 = summary.loc["Árvore completa (profundidade 7)", "f1_medio"]
     reduced_f1 = summary.loc["Árvore sem grade e juros (profundidade 7)", "f1_medio"]
     lines += [
@@ -84,7 +86,7 @@ def run():
         "A árvore reduzida exclui todas as colunas codificadas de `loan_grade` e "
         "`loan_int_rate`; mantém a mesma profundidade, as mesmas dobras e os mesmos "
         "índices de balanceamento da árvore completa.",
-        f"A diferença média de F1 (completa menos reduzida) foi {full_f1 - reduced_f1:.4f}.",
+        f"A diferença média de F1 (completa menos reduzida) foi {decimal_br(full_f1 - reduced_f1)}.",
         "Isso mede sensibilidade nesta base, não demonstra vazamento por si só. É preciso "
         "confirmar quando grade e juros ficam disponíveis no processo real.",
         "A profundidade 7 foi fixada a partir da análise principal; não foi otimizada "

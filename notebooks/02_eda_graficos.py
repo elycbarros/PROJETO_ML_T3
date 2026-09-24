@@ -115,27 +115,33 @@ resumo = {
 }
 (saida / "resumo_numerico.json").write_text(json.dumps(resumo, indent=2, ensure_ascii=False) + "\n")
 
+def decimal_br(value, casas=2):
+    return f"{value:.{casas}f}".replace(".", ",")
+
+def inteiro_br(value):
+    return f"{int(value):,}".replace(",", ".")
+
 SECAO_1 = f"""## 1. Análise exploratória (EDA)
 
 ### Distribuição do alvo
 
-A inadimplência representa {resumo['percentual_inadimplencia']:.2f}% dos registros. Há diferença relevante entre as classes; o split deverá preservar a proporção e a avaliação usará recall, precisão e F1 além da acurácia. O balanceamento, quando aplicado, ficará restrito ao treino.
+A inadimplência representa {decimal_br(resumo['percentual_inadimplencia'])}% dos registros. Há diferença relevante entre as classes; o split deverá preservar a proporção e a avaliação usará recall, precisão e F1 além da acurácia. O balanceamento, quando aplicado, ficará restrito ao treino.
 
 ### Renda anual
 
-A mediana da renda é {resumo['renda_mediana_em_dia']:,.0f} para contratos em dia e {resumo['renda_mediana_inadimplente']:,.0f} para contratos inadimplentes. O histograma usa intervalos comuns e eixo logarítmico, sem remover registros. Cada classe é normalizada separadamente; a altura mostra sua fração no intervalo. Valores altos não demonstram erro por si sós.
+A mediana da renda é {inteiro_br(resumo['renda_mediana_em_dia'])} para contratos em dia e {inteiro_br(resumo['renda_mediana_inadimplente'])} para contratos inadimplentes. O histograma usa intervalos comuns e eixo logarítmico, sem remover registros. Cada classe é normalizada separadamente; a altura mostra sua fração no intervalo. Valores altos não demonstram erro por si sós.
 
 ### Comprometimento da renda
 
-As medianas de `loan_percent_income` são {resumo['comprometimento_mediano_em_dia']:.3f} para a classe 0 e {resumo['comprometimento_mediano_inadimplente']:.3f} para a classe 1. A correlação de Pearson com o alvo é {resumo['correlacao_status_comprometimento']:.3f}; isso é associação descritiva, não causalidade.
+As medianas de `loan_percent_income` são {decimal_br(resumo['comprometimento_mediano_em_dia'], 3)} para a classe 0 e {decimal_br(resumo['comprometimento_mediano_inadimplente'], 3)} para a classe 1. A correlação de Pearson com o alvo é {decimal_br(resumo['correlacao_status_comprometimento'], 3)}; isso é associação descritiva, não causalidade.
 
 ### Outliers: renda e valor do empréstimo
 
 O critério de referência é o limite superior do boxplot (Q3 + 1,5×IQR), usado só para
-visualizar a cauda, não como regra de exclusão. Por esse critério, {resumo['outliers_renda_iqr']:,}
-registros de `person_income` ficam acima de {resumo['limite_renda_iqr']:,.0f} e
-{resumo['outliers_valor_iqr']:,} registros de `loan_amnt` ficam acima de
-{resumo['limite_valor_iqr']:,.0f}. O gráfico 06 mostra essas caudas por status, em escala
+visualizar a cauda, não como regra de exclusão. Por esse critério, {inteiro_br(resumo['outliers_renda_iqr'])}
+registros de `person_income` ficam acima de {inteiro_br(resumo['limite_renda_iqr'])} e
+{inteiro_br(resumo['outliers_valor_iqr'])} registros de `loan_amnt` ficam acima de
+{inteiro_br(resumo['limite_valor_iqr'])}. O gráfico 06 mostra essas caudas por status, em escala
 logarítmica. A decisão (seção 2 abaixo) é manter esses valores: são extremos raros e
 plausíveis (rendas e empréstimos altos existem), não erros de digitação como as idades de
 123/144 anos. Essa manutenção pesa mais no KNN, sensível a distâncias euclidianas mesmo após
@@ -143,23 +149,19 @@ o StandardScaler, do que na árvore, que corta por limiar e é robusta à magnit
 
 ### Valores ausentes
 
-`person_emp_length` tem {int(dados['person_emp_length'].isna().sum()):,} valores ausentes e `loan_int_rate` tem {int(dados['loan_int_rate'].isna().sum()):,}. A mediana será usada para o tempo de emprego porque a distribuição é assimétrica; a média será usada para a taxa porque média e mediana são próximas. Esses valores são aprendidos somente no treino de cada dobra, depois do split.
+`person_emp_length` tem {inteiro_br(dados['person_emp_length'].isna().sum())} valores ausentes e `loan_int_rate` tem {inteiro_br(dados['loan_int_rate'].isna().sum())}. A mediana será usada para o tempo de emprego porque a distribuição é assimétrica; a média será usada para a taxa porque média e mediana são próximas. Esses valores são aprendidos somente no treino de cada dobra, depois do split.
 
 ### Correlações e próximos passos
 
-A correlação entre `loan_status` e `loan_int_rate` é {resumo['correlacao_status_taxa_juros']:.3f}. Correlação não determina exclusão automática nem causalidade. A preparação (seções 2 a 4) remove repetições exatas e idades de 123/144 anos, invalida dois tempos de emprego impossíveis, mantém rendas extremas plausíveis, substitui a razão redundante pela coluna exigida e aprende imputadores somente no treino. Esta EDA descreve toda a base; não é uma análise cega de holdout.
+A correlação entre `loan_status` e `loan_int_rate` é {decimal_br(resumo['correlacao_status_taxa_juros'], 3)}. Correlação não determina exclusão automática nem causalidade. A preparação (seções 2 a 4) remove repetições exatas e idades de 123/144 anos, invalida dois tempos de emprego impossíveis, mantém rendas extremas plausíveis, substitui a razão redundante pela coluna exigida e aprende imputadores somente no treino. Esta EDA descreve toda a base; não é uma análise cega de holdout.
 
 As figuras ficam em `resultados/graficos_eda/`. O gráfico 05 resume os nulos observados antes da imputação e o gráfico 06 mostra os outliers de renda e valor do empréstimo por status. Os CSVs foram apenas lidos e tiveram seus hashes conferidos antes e depois da execução.
 """
 
 CABECALHO = (
     "# EDA e preparação dos dados\n\n"
-    "Este arquivo é escrito em duas etapas por dois scripts diferentes: a Seção 1 por "
-    "`notebooks/02_eda_graficos.py` (lendo o CSV original) e as Seções 2 a 4 por "
-    "`notebooks/pipeline_credito.py`, via `relatorios_credito.write_reports` (lendo a base "
-    "já limpa). Rodar `notebooks/03_executar_pipeline.py` executa as duas etapas em "
-    "sequência e produz o arquivo completo; rodar só este script deixa as Seções 2 a 4 como "
-    "estavam.\n\n"
+    "Gerado por `notebooks/03_executar_pipeline.py` (ver \"Reprodução\" no README para a "
+    "ordem completa).\n\n"
 )
 
 destino = RAIZ / "documentacao" / "01_eda_e_preparacao.md"
