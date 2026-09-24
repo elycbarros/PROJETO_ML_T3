@@ -34,13 +34,25 @@ Custo hipotético = FP × custo_FP + FN × custo_FN.
 A diferença de R$ 697.000,00 vale apenas para essas contagens e essas hipóteses.
 Não é economia realizada, receita prevista ou prova de redução efetiva da inadimplência.
 
-### Recomendação
+### Veredito: qual erro custa mais e qual modelo vai para produção
 
-Recomendaria Árvore de Decisão, configuração 7, como candidato a um
-piloto de apoio à análise neste cenário. Seu F1 de teste é 0.7674.
-Os parâmetros de cada família foram selecionados somente por validação interna.
-O custo real, a estabilidade temporal e a disponibilidade das variáveis no momento
-da previsão precisam ser definidos antes de uso operacional.
+**O erro mais caro é o falso negativo (FN).** Um inadimplente aprovado como "seguro"
+leva ao prejuízo do valor emprestado. Um falso positivo (bom pagador recusado) custa a
+receita de juros daquele contrato e o relacionamento com o cliente, mas não o capital.
+Por isso, no cenário ilustrativo, um FN custa 5 vezes mais que um FP.
+
+**Veredito: colocaria em produção a Árvore de Decisão (configuração 7).**
+Mesmo com o FN sendo o erro mais caro, a árvore sai mais barata: ela comete
+15 FN a mais que o KNN, mas
+772 FP a menos. A árvore tem menor custo se custo_FN/custo_FP for menor que 51,467; no ponto há empate. Na relação oposta, o KNN tem menor custo. Para o KNN
+compensar, a perda de um calote teria de valer dezenas de vezes a margem perdida ao recusar
+um bom pagador, o que é pouco plausível: a perda máxima de um FN é o próprio valor
+emprestado. Por isso a vantagem da árvore resiste à incerteza sobre os custos reais. Ela também tem o maior F1 no teste
+(0.7674) e a maior precisão, o que reduz recusas injustas de bons
+pagadores. Os parâmetros foram escolhidos só por validação interna, antes do teste.
+
+Antes do uso real, o banco deve confirmar os custos efetivos de cada erro e se juros e
+classificação de risco estão disponíveis no momento da decisão (ver Limitações).
 
 ### Importância das variáveis
 
