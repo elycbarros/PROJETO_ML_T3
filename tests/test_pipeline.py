@@ -92,7 +92,7 @@ class PreparationContracts(unittest.TestCase):
 
 class OutputContracts(unittest.TestCase):
     def test_originals(self):
-        self.assertEqual(len(verify_originals()), 2)
+        self.assertEqual(len(verify_originals()), 1)
 
     def test_eight_corrected_experiments_and_selection(self):
         results = pd.read_csv(ROOT / "resultados/experimentos_corrigidos.csv", keep_default_na=False)

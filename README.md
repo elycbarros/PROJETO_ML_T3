@@ -133,9 +133,10 @@ Os três arquivos consolidados e este README são reescritos a cada execução d
 
 ## Dados originais
 
-Os dois CSVs da raiz são somente leitura para o pipeline. Os hashes são conferidos antes
-e depois. Apenas a base de crédito entra na modelagem. Saídas ficam em dados_derivados/,
-resultados/ e documentacao/. O índice de origem não entra como preditor.
+O CSV `credit_risk_dataset.csv` na raiz é somente leitura para o pipeline; seu hash é
+conferido antes e depois de cada execução (`documentacao/integridade_originais.json`).
+Saídas ficam em `dados_derivados/`, `resultados/` e `documentacao/`. O índice de origem
+não entra como preditor.
 
 Fonte da base de dados:
 [base de crédito](https://drive.google.com/file/d/12vm4oQEeH7ZqB6glXEPpkc5V91lQy0mk/view).
