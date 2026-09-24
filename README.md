@@ -7,6 +7,31 @@ O problema de negócio é apoiar a avaliação de risco de crédito: deixar pass
 inadimplente pode gerar perda do empréstimo, enquanto recusar um bom pagador pode
 causar perda de receita e de relacionamento. Comparamos os dois tipos de erro.
 
+## Por que a base de crédito
+
+O problema oferecia duas bases à escolha (crédito ou e-commerce). Comparamos as duas
+antes de decidir:
+
+| Característica | Crédito | E-commerce |
+| --- | ---: | ---: |
+| Registros | 32.581 | 5.630 |
+| Colunas | 12 | 20 |
+| Classe positiva | 21,82% inadimplentes | 16,84% abandonos |
+| Colunas com nulos | 2 | 7 |
+| Linhas inteiramente duplicadas | 165 | 0 |
+
+A base de crédito foi escolhida por oferecer, nos próprios dados, material concreto para
+decisões fundamentadas em cada fase do trabalho: valores suspeitos verificáveis (idades de
+até 144 anos e tempos de emprego de até 123 anos), nulos reais em duas colunas (tempo de
+emprego e taxa de juros) que permitem comparar distribuições antes de escolher a técnica
+de imputação, duplicatas exatas para identificar e remover, e um desbalanceamento de
+classes representativo de bases de crédito reais. Também identificamos que
+`loan_percent_income` já representa aproximadamente a mesma razão exigida pela coluna
+definido `comprometimento_renda` — motivo pelo qual a versão original foi retirada dos
+preditores (Seção 3), em vez de mantida como informação duplicada. Além disso, é um
+problema de decisão binária com custo assimétrico direto entre os dois tipos de erro (FP e
+FN), o que conecta naturalmente cada etapa técnica à análise de negócio da Etapa 6.
+
 ## Resumo executivo
 
 Métricas no teste; a classe 1 é inadimplência. FP é um bom pagador marcado como risco;
