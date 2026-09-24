@@ -18,7 +18,10 @@ estratificadas, para diagnosticar overfitting antes de tocar no teste.
 train_f1_1_mean mede o treino original de cada dobra; cv_f1 mede sua validação.
 treino_f1_1 é medido no treino original completo, sem repetições do balanceamento.
 As métricas de teste de todas as configurações permitem uma comparação descritiva,
-mas são calculadas somente depois de persistir os parâmetros selecionados.
+mas são calculadas somente depois de persistir os parâmetros selecionados. A coluna
+gap_f1 da tabela é treino_f1_1 menos teste_f1_1 (treino vs. teste); é diferente do
+"gap treino-validação" discutido abaixo, que compara train_f1_1_mean com cv_f1
+(treino vs. validação, usado para escolher a configuração antes de tocar no teste).
 
 A seleção foi 9, com F1 médio de validação 0.5984.
 Usamos o maior F1 médio; em empate exato, K maior no KNN e menor profundidade na árvore.
@@ -45,7 +48,10 @@ O gráfico de treino, validação e teste está em resultados/avaliacao_final/.
 train_f1_1_mean mede o treino original de cada dobra; cv_f1 mede sua validação.
 treino_f1_1 é medido no treino original completo, sem repetições do balanceamento.
 As métricas de teste de todas as configurações permitem uma comparação descritiva,
-mas são calculadas somente depois de persistir os parâmetros selecionados.
+mas são calculadas somente depois de persistir os parâmetros selecionados. A coluna
+gap_f1 da tabela é treino_f1_1 menos teste_f1_1 (treino vs. teste); é diferente do
+"gap treino-validação" discutido abaixo, que compara train_f1_1_mean com cv_f1
+(treino vs. validação, usado para escolher a configuração antes de tocar no teste).
 
 A seleção foi 7, com F1 médio de validação 0.7551.
 Usamos o maior F1 médio; em empate exato, K maior no KNN e menor profundidade na árvore.

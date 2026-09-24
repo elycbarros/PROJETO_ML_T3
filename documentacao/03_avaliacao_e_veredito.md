@@ -68,21 +68,7 @@ O estudo não demonstra causalidade nem adequação para decisões automatizadas
 
 ## Verificação complementar
 
-Esta análise usa apenas as cinco dobras do conjunto de treino. A divisão de teste, a seleção de KNN/Árvore e o veredito principal permanecem inalterados. Gerada por `notebooks/04_analise_complementar.py`, um passo extra opcional (não exigido pelo problema), rodado manualmente depois do pipeline principal.
-
-| Modelo | F1 médio (classe 1) | Desvio entre dobras | Recall médio | Precisão média |
-| --- | ---: | ---: | ---: | ---: |
-| Referência aleatória estratificada | 0.2219 | 0.0063 | 0.2239 | 0.2200 |
-| Árvore completa (profundidade 7) | 0.7551 | 0.0131 | 0.7329 | 0.7814 |
-| Árvore sem grade e juros (profundidade 7) | 0.6327 | 0.0076 | 0.6844 | 0.5888 |
-
-A referência aleatória estratificada preserva aproximadamente a proporção das classes, mas não aprende relações entre atributos e alvo.
-A árvore reduzida exclui todas as colunas codificadas de `loan_grade` e `loan_int_rate`; mantém a mesma profundidade, as mesmas dobras e os mesmos índices de balanceamento da árvore completa.
-A diferença média de F1 (completa menos reduzida) foi 0.1225.
-Isso mede sensibilidade nesta base, não demonstra vazamento por si só. É preciso confirmar quando grade e juros ficam disponíveis no processo real.
-A profundidade 7 foi fixada a partir da análise principal; não foi otimizada novamente para a versão reduzida. Portanto, esta comparação é exploratória, e não uma nova seleção de modelo.
-
-Resultados por dobra: `resultados/analise_complementar_dobras.csv`. Resumo: `resultados/analise_complementar_resumo.csv`.
+Seção opcional, não exigida pelo problema. Roda uma referência aleatória estratificada e testa a sensibilidade da árvore a `loan_grade`/`loan_int_rate` (variáveis cuja disponibilidade no momento da decisão real não é confirmada pela base). Para gerá-la, rode `python3 notebooks/04_analise_complementar.py` depois do pipeline principal — ele substitui este parágrafo pelo resultado, sem alterar o resto deste arquivo.
 
 ## Nota metodológica
 
@@ -101,7 +87,6 @@ projeto (notebooks/03_executar_pipeline.py e notebooks/pipeline_completo.ipynb).
 - Simulação financeira calculada a partir das contagens geradas, sem números fixados.
 - Este arquivo é regenerado a partir dos mesmos resultados a cada execução do pipeline.
 
-O teste e a base completa já foram consultados durante o desenvolvimento anterior. A correção mantém a semente e a divisão e não usa o teste na seleção atual, mas não recupera a independência de um conjunto externo intocado.
-
+A limitação de dependência do teste histórico está detalhada na seção "Limitações" acima.
 A auditoria detalhada está em resultados/auditoria_execucao.json. Os testes de regressão
 ficam em tests/test_pipeline.py.
