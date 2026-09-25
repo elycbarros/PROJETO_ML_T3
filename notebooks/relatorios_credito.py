@@ -41,7 +41,7 @@ def table(frame, rename=None):
 
 PLACEHOLDER_COMPLEMENTAR = (
     "## Verificação complementar\n\n"
-    "Seção opcional, não exigida pelo problema. Roda uma referência aleatória "
+    "Seção opcional, executada separadamente. Roda uma referência aleatória "
     "estratificada e testa a sensibilidade da árvore a `loan_grade`/`loan_int_rate` "
     "(variáveis cuja disponibilidade no momento da decisão real não é confirmada pela "
     "base). Para gerá-la, rode `python3 notebooks/04_analise_complementar.py` depois do "
@@ -139,7 +139,7 @@ def write_reports(root, data, stats, experiments, final, finance, selection, lim
 
 Foram removidas {cleaning['duplicatas_removidas']} repetições exatas, mantendo a primeira ocorrência.
 Sem identificador de cliente, igualdade não prova que sejam a mesma pessoa; a opção segue a exigência
-da estudo de remover redundâncias e evita casos idênticos nas duas partições.
+de remover redundâncias e evita casos idênticos nas duas partições.
 
 A exclusão por idade usa uma regra explícita de plausibilidade para este estudo: idade >=120.
 Os registros observados tinham {cleaning['idades_observadas']}; não há idades entre 101 e 119.
@@ -200,8 +200,8 @@ A validação recebe apenas transform. O balanceamento usa Random Over-Sampling:
 cada linha original de treino e acrescenta cópias aleatórias, com reposição, apenas da
 classe minoritária até igualar as contagens.
 
-**Escolha da técnica de balanceamento — comparação deliberada.** O problema cita, como
-exemplo, SMOTE ou Random Under Sampling. Avaliamos as três opções e optamos pelo Random
+**Escolha da técnica de balanceamento.** Comparamos Random Over-Sampling, SMOTE e
+Random Under Sampling. Optamos pelo Random
 Over-Sampling por dois motivos, cada um comparado à técnica sugerida correspondente:
 frente ao Random Under Sampling, o Random Over-Sampling preserva 100% das linhas
 originais da classe majoritária no treino — o undersampling descartaria linhas reais só
@@ -210,7 +210,7 @@ sintéticos interpolados no espaço de atributos — toda linha do treino balanc
 original ou repetida, é uma observação real da base, o que facilita a auditoria de
 rastreabilidade (resultados/indices_treino_balanceado.csv) e evita introduzir
 combinações de atributos que não ocorreram de fato. Não é desconhecimento das técnicas
-citadas no problema; é uma escolha justificada entre as três. O ajuste final tem
+comparadas; a escolha prioriza preservação e rastreabilidade. O ajuste final tem
 {split['balanced']} linhas balanceadas, preservando todas as {split['retained_originals']}
 originais do treino. As duas famílias recebem exatamente os mesmos índices balanceados.
 
@@ -416,8 +416,7 @@ causar perda de receita e de relacionamento. Comparamos os dois tipos de erro.
 
 ## Por que a base de crédito
 
-O problema oferecia duas bases à escolha (crédito ou e-commerce). Comparamos as duas
-antes de decidir:
+Comparamos duas bases candidatas, crédito e e-commerce, antes da escolha:
 
 | Característica | Crédito | E-commerce |
 | --- | ---: | ---: |
@@ -434,13 +433,13 @@ emprego e taxa de juros) que permitem comparar distribuições antes de escolher
 de imputação, duplicatas exatas para identificar e remover, e um desbalanceamento de
 classes representativo de bases de crédito reais. Também identificamos que
 `loan_percent_income` já representa aproximadamente a mesma razão exigida pela coluna
-definido `comprometimento_renda` — motivo pelo qual a versão original foi retirada dos
+calculada `comprometimento_renda` — motivo pelo qual a versão original foi retirada dos
 preditores (Seção 3), em vez de mantida como informação duplicada. Além disso, é um
 problema de decisão binária com custo assimétrico direto entre os dois tipos de erro (FP e
-FN), o que conecta naturalmente cada etapa técnica à análise de negócio da Etapa 6.
+FN), o que conecta as etapas técnicas à análise de negócio.
 
 Os números desta tabela e a verificação da redundância de `loan_percent_income` são
-reproduzidos ao vivo, célula por célula, em `notebooks/00_comparacao_bases.ipynb`
+reproduzidos célula por célula, em `notebooks/00_comparacao_bases.ipynb`
 — não foram apenas digitados aqui.
 
 ## Resumo executivo
@@ -483,21 +482,21 @@ Ainda assim a árvore sai mais barata: comete {abs(delta_fn)} FN {"a mais" if de
 | --- |
 | ![Importância das variáveis](resultados/avaliacao_final/feature_importance_arvore.png) |
 
-Todos os gráficos estão em `resultados/graficos_eda/` (Etapa 1) e `resultados/avaliacao_final/`
-(Etapa 6); os das Etapas 2 a 5 (curvas de validação, sobreajuste e simulação financeira) estão
+Os gráficos da exploração estão em `resultados/graficos_eda/` e os da avaliação em
+`resultados/avaliacao_final/`. As curvas de validação, sobreajuste e simulação financeira estão
 descritos e exibidos nos documentos indicados na tabela abaixo.
 
-## Onde encontrar a resposta de cada pergunta
+## Navegação rápida
 
 | Pergunta | Onde está respondida | Notebook |
 | --- | --- | --- |
 | Qual base e qual o objetivo de negócio? | Este README, parágrafos acima | — |
-| Etapa 1 — Que insights a EDA revelou? | `documentacao/01_eda_e_preparacao.md`, Seção 1 | célula 5 |
-| Etapa 2 — Como nulos e outliers foram tratados, e o impacto no KNN/Árvore? | `documentacao/01_eda_e_preparacao.md`, Seção 2 | célula 8 |
-| Etapa 3 — Como `comprometimento_renda` foi calculada sem dividir por zero ou por valores inválidos? | `documentacao/01_eda_e_preparacao.md`, Seção 3 | célula 10 |
-| Etapa 4 — Como o split, o balanceamento e a escala evitam vazamento entre treino e teste? | `documentacao/01_eda_e_preparacao.md`, Seção 4 | célula 12 |
-| Etapa 5 — Como o overfitting foi identificado e evitado? | `documentacao/02_modelagem.md` | célula 16 |
-| Etapa 6 — Qual modelo colocar em produção, olhando a matriz de confusão? | `documentacao/03_avaliacao_e_veredito.md` | célula 19 |
+| EDA — Que insights a EDA revelou? | `documentacao/01_eda_e_preparacao.md`, Seção 1 | célula 5 |
+| Limpeza — Como nulos e outliers foram tratados, e o impacto no KNN/Árvore? | `documentacao/01_eda_e_preparacao.md`, Seção 2 | célula 8 |
+| Engenharia de atributos — Como `comprometimento_renda` foi calculada sem dividir por zero ou por valores inválidos? | `documentacao/01_eda_e_preparacao.md`, Seção 3 | célula 10 |
+| Preparação — Como o split, o balanceamento e a escala evitam vazamento entre treino e teste? | `documentacao/01_eda_e_preparacao.md`, Seção 4 | célula 12 |
+| Modelagem — Como o overfitting foi identificado e evitado? | `documentacao/02_modelagem.md` | célula 16 |
+| Avaliação — Qual modelo colocar em produção, olhando a matriz de confusão? | `documentacao/03_avaliacao_e_veredito.md` | célula 19 |
 
 ## Reprodução
 
@@ -521,8 +520,7 @@ chama `notebooks/03_executar_pipeline.py`, que por sua vez chama, nesta ordem:
    e este README.
 
 `notebooks/01_inspecao_inicial.ipynb` é uma inspeção opcional; não precisa ser executado.
-`notebooks/04_analise_complementar.py` é uma verificação extra opcional (não exigida pelo
-problema): roda depois do pipeline principal e completa a seção "Verificação complementar"
+`notebooks/04_analise_complementar.py` é uma verificação complementar opcional: roda depois do pipeline principal e completa a seção "Verificação complementar"
 de `03_avaliacao_e_veredito.md`. Nenhum desses dois scripts é chamado automaticamente pelos
 outros — cada um só roda quando você o executa.
 
@@ -539,9 +537,9 @@ python3 -m unittest discover -s tests -v
 {(docs / 'dicionario_dados.md').read_text().split('## Resumo do inventário inicial')[0].replace('# Dicionário de dados — base de crédito', '### Dicionário de dados').rstrip()}
 
 - `documentacao/dicionario_dados.md`: significado, unidade e papel de cada coluna.
-- `documentacao/01_eda_e_preparacao.md`: EDA, limpeza, outliers, engenharia de atributos e separação/balanceamento (Etapas 1 a 4).
-- `documentacao/02_modelagem.md`: experimentos de K e profundidade, diagnóstico de overfitting (Etapa 5).
-- `documentacao/03_avaliacao_e_veredito.md`: matrizes, custos e veredito de negócio (Etapa 6).
+- `documentacao/01_eda_e_preparacao.md`: EDA, limpeza, outliers, engenharia de atributos e separação/balanceamento (exploração e preparação).
+- `documentacao/02_modelagem.md`: experimentos de K e profundidade, diagnóstico de overfitting (Modelagem).
+- `documentacao/03_avaliacao_e_veredito.md`: matrizes, custos e veredito de negócio (Avaliação).
 - `resultados/experimentos.csv`: treino, validação e teste das oito configurações.
 - `resultados/parametros_selecionados.json`: seleção anterior às predições de teste.
 - `resultados/auditoria_execucao.json`: origem das partições, preservação e versões.
