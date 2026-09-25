@@ -129,8 +129,7 @@ def oversample_indices(y, seed=SEED):
     """Random Over-Sampling: inclui cada linha original uma vez e acrescenta cópias
     aleatórias, com reposição, apenas do déficit das classes minoritárias.
 
-    Escolha deliberada em vez das duas técnicas sugeridas no problema (SMOTE e Random
-    Under Sampling), comparadas explicitamente:
+    Comparação com SMOTE e Random Under Sampling:
     - vs. Random Under Sampling: preserva as 100% das linhas originais da classe
       majoritária no treino; undersampling descartaria linhas reais.
     - vs. SMOTE: nunca gera pontos sintéticos interpolados; toda linha resultante,

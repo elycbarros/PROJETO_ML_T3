@@ -1,6 +1,6 @@
 """Referência simples e sensibilidade a variáveis de disponibilidade incerta.
 
-Verificação extra, opcional (não exigida pelo problema). Roda depois do pipeline
+Verificação extra, opcional (executada separadamente). Roda depois do pipeline
 principal (notebooks/03_executar_pipeline.py) e depende dos arquivos que ele gera em
 dados_derivados/. Usa somente o treino da divisão principal; não altera seleção nem
 avaliação final. Substitui a seção "Verificação complementar" de
@@ -67,9 +67,9 @@ def run():
     lines = [
         "## Verificação complementar", "",
         "Esta análise usa apenas as cinco dobras do conjunto de treino. A divisão de teste, "
-        "a seleção de KNN/Árvore e o veredito principal permanecem inalterados. Gerada por "
-        "`notebooks/04_analise_complementar.py`, um passo extra opcional (não exigido pelo "
-        "problema), rodado manualmente depois do pipeline principal.", "",
+        "a seleção de KNN/Árvore e o veredito principal permanecem inalterados. "
+        "O script `notebooks/04_analise_complementar.py` gera esta seção quando executado "
+        "após o pipeline principal.", "",
         "| Modelo | F1 médio (classe 1) | Desvio entre dobras | Recall médio | Precisão média |",
         "| --- | ---: | ---: | ---: | ---: |",
     ]

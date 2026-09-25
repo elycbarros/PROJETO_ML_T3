@@ -42,7 +42,7 @@ As figuras ficam em `resultados/graficos_eda/`. O gráfico 05 resume os nulos ob
 
 Foram removidas 165 repetições exatas, mantendo a primeira ocorrência.
 Sem identificador de cliente, igualdade não prova que sejam a mesma pessoa; a opção segue a exigência
-da estudo de remover redundâncias e evita casos idênticos nas duas partições.
+de remover redundâncias e evita casos idênticos nas duas partições.
 
 A exclusão por idade usa uma regra explícita de plausibilidade para este estudo: idade >=120.
 Os registros observados tinham [144, 144, 123, 123, 144]; não há idades entre 101 e 119.
@@ -106,8 +106,8 @@ A validação recebe apenas transform. O balanceamento usa Random Over-Sampling:
 cada linha original de treino e acrescenta cópias aleatórias, com reposição, apenas da
 classe minoritária até igualar as contagens.
 
-**Escolha da técnica de balanceamento — comparação deliberada.** O problema cita, como
-exemplo, SMOTE ou Random Under Sampling. Avaliamos as três opções e optamos pelo Random
+**Escolha da técnica de balanceamento.** Comparamos Random Over-Sampling, SMOTE e
+Random Under Sampling. Optamos pelo Random
 Over-Sampling por dois motivos, cada um comparado à técnica sugerida correspondente:
 frente ao Random Under Sampling, o Random Over-Sampling preserva 100% das linhas
 originais da classe majoritária no treino — o undersampling descartaria linhas reais só
@@ -116,7 +116,7 @@ sintéticos interpolados no espaço de atributos — toda linha do treino balanc
 original ou repetida, é uma observação real da base, o que facilita a auditoria de
 rastreabilidade (resultados/indices_treino_balanceado.csv) e evita introduzir
 combinações de atributos que não ocorreram de fato. Não é desconhecimento das técnicas
-citadas no problema; é uma escolha justificada entre as três. O ajuste final tem
+comparadas; a escolha prioriza preservação e rastreabilidade. O ajuste final tem
 40514 linhas balanceadas, preservando todas as 25928
 originais do treino. As duas famílias recebem exatamente os mesmos índices balanceados.
 

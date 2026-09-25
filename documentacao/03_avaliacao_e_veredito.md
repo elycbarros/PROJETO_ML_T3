@@ -76,7 +76,7 @@ O estudo não demonstra causalidade nem adequação para decisões automatizadas
 
 ## Verificação complementar
 
-Esta análise usa apenas as cinco dobras do conjunto de treino. A divisão de teste, a seleção de KNN/Árvore e o veredito principal permanecem inalterados. Gerada por `notebooks/04_analise_complementar.py`, um passo extra opcional (não exigido pelo problema), rodado manualmente depois do pipeline principal.
+Esta análise usa apenas as cinco dobras do conjunto de treino. A divisão de teste, a seleção de KNN/Árvore e o veredito principal permanecem inalterados. O script `notebooks/04_analise_complementar.py` gera esta seção quando executado após o pipeline principal.
 
 | Modelo | F1 médio (classe 1) | Desvio entre dobras | Recall médio | Precisão média |
 | --- | ---: | ---: | ---: | ---: |

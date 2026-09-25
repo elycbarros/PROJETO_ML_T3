@@ -9,8 +9,7 @@ causar perda de receita e de relacionamento. Comparamos os dois tipos de erro.
 
 ## Por que a base de crédito
 
-O problema oferecia duas bases à escolha (crédito ou e-commerce). Comparamos as duas
-antes de decidir:
+Comparamos duas bases candidatas, crédito e e-commerce, antes da escolha:
 
 | Característica | Crédito | E-commerce |
 | --- | ---: | ---: |
@@ -27,13 +26,13 @@ emprego e taxa de juros) que permitem comparar distribuições antes de escolher
 de imputação, duplicatas exatas para identificar e remover, e um desbalanceamento de
 classes representativo de bases de crédito reais. Também identificamos que
 `loan_percent_income` já representa aproximadamente a mesma razão exigida pela coluna
-definido `comprometimento_renda` — motivo pelo qual a versão original foi retirada dos
+calculada `comprometimento_renda` — motivo pelo qual a versão original foi retirada dos
 preditores (Seção 3), em vez de mantida como informação duplicada. Além disso, é um
 problema de decisão binária com custo assimétrico direto entre os dois tipos de erro (FP e
-FN), o que conecta naturalmente cada etapa técnica à análise de negócio da Etapa 6.
+FN), o que conecta as etapas técnicas à análise de negócio.
 
 Os números desta tabela e a verificação da redundância de `loan_percent_income` são
-reproduzidos ao vivo, célula por célula, em `notebooks/00_comparacao_bases.ipynb`
+reproduzidos célula por célula, em `notebooks/00_comparacao_bases.ipynb`
 — não foram apenas digitados aqui.
 
 ## Resumo executivo
@@ -79,21 +78,21 @@ Ainda assim a árvore sai mais barata: comete 15 FN a mais que o KNN, mas
 | --- |
 | ![Importância das variáveis](resultados/avaliacao_final/feature_importance_arvore.png) |
 
-Todos os gráficos estão em `resultados/graficos_eda/` (Etapa 1) e `resultados/avaliacao_final/`
-(Etapa 6); os das Etapas 2 a 5 (curvas de validação, sobreajuste e simulação financeira) estão
+Os gráficos da exploração estão em `resultados/graficos_eda/` e os da avaliação em
+`resultados/avaliacao_final/`. As curvas de validação, sobreajuste e simulação financeira estão
 descritos e exibidos nos documentos indicados na tabela abaixo.
 
-## Onde encontrar a resposta de cada pergunta
+## Navegação rápida
 
 | Pergunta | Onde está respondida | Notebook |
 | --- | --- | --- |
 | Qual base e qual o objetivo de negócio? | Este README, parágrafos acima | — |
-| Etapa 1 — Que insights a EDA revelou? | `documentacao/01_eda_e_preparacao.md`, Seção 1 | célula 5 |
-| Etapa 2 — Como nulos e outliers foram tratados, e o impacto no KNN/Árvore? | `documentacao/01_eda_e_preparacao.md`, Seção 2 | célula 8 |
-| Etapa 3 — Como `comprometimento_renda` foi calculada sem dividir por zero ou por valores inválidos? | `documentacao/01_eda_e_preparacao.md`, Seção 3 | célula 10 |
-| Etapa 4 — Como o split, o balanceamento e a escala evitam vazamento entre treino e teste? | `documentacao/01_eda_e_preparacao.md`, Seção 4 | célula 12 |
-| Etapa 5 — Como o overfitting foi identificado e evitado? | `documentacao/02_modelagem.md` | célula 16 |
-| Etapa 6 — Qual modelo colocar em produção, olhando a matriz de confusão? | `documentacao/03_avaliacao_e_veredito.md` | célula 19 |
+| EDA — Que insights a EDA revelou? | `documentacao/01_eda_e_preparacao.md`, Seção 1 | célula 5 |
+| Limpeza — Como nulos e outliers foram tratados, e o impacto no KNN/Árvore? | `documentacao/01_eda_e_preparacao.md`, Seção 2 | célula 8 |
+| Engenharia de atributos — Como `comprometimento_renda` foi calculada sem dividir por zero ou por valores inválidos? | `documentacao/01_eda_e_preparacao.md`, Seção 3 | célula 10 |
+| Preparação — Como o split, o balanceamento e a escala evitam vazamento entre treino e teste? | `documentacao/01_eda_e_preparacao.md`, Seção 4 | célula 12 |
+| Modelagem — Como o overfitting foi identificado e evitado? | `documentacao/02_modelagem.md` | célula 16 |
+| Avaliação — Qual modelo colocar em produção, olhando a matriz de confusão? | `documentacao/03_avaliacao_e_veredito.md` | célula 19 |
 
 ## Reprodução
 
@@ -117,8 +116,7 @@ chama `notebooks/03_executar_pipeline.py`, que por sua vez chama, nesta ordem:
    e este README.
 
 `notebooks/01_inspecao_inicial.ipynb` é uma inspeção opcional; não precisa ser executado.
-`notebooks/04_analise_complementar.py` é uma verificação extra opcional (não exigida pelo
-problema): roda depois do pipeline principal e completa a seção "Verificação complementar"
+`notebooks/04_analise_complementar.py` é uma verificação complementar opcional: roda depois do pipeline principal e completa a seção "Verificação complementar"
 de `03_avaliacao_e_veredito.md`. Nenhum desses dois scripts é chamado automaticamente pelos
 outros — cada um só roda quando você o executa.
 
@@ -151,9 +149,9 @@ python3 -m unittest discover -s tests -v
 | `comprometimento_renda` | decimal | preditora calculada | `(loan_amnt / person_income) * 100`, em percentual; não representa parcela mensal. |
 
 - `documentacao/dicionario_dados.md`: significado, unidade e papel de cada coluna.
-- `documentacao/01_eda_e_preparacao.md`: EDA, limpeza, outliers, engenharia de atributos e separação/balanceamento (Etapas 1 a 4).
-- `documentacao/02_modelagem.md`: experimentos de K e profundidade, diagnóstico de overfitting (Etapa 5).
-- `documentacao/03_avaliacao_e_veredito.md`: matrizes, custos e veredito de negócio (Etapa 6).
+- `documentacao/01_eda_e_preparacao.md`: EDA, limpeza, outliers, engenharia de atributos e separação/balanceamento (exploração e preparação).
+- `documentacao/02_modelagem.md`: experimentos de K e profundidade, diagnóstico de overfitting (Modelagem).
+- `documentacao/03_avaliacao_e_veredito.md`: matrizes, custos e veredito de negócio (Avaliação).
 - `resultados/experimentos.csv`: treino, validação e teste das oito configurações.
 - `resultados/parametros_selecionados.json`: seleção anterior às predições de teste.
 - `resultados/auditoria_execucao.json`: origem das partições, preservação e versões.
