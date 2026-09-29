@@ -1,5 +1,15 @@
 __pycache__/
+*.pyc
 .ipynb_checkpoints/
 .venv/
 .DS_Store
 .idea/
+
+# Metadados AppleDouble gerados pelo macOS em volumes externos (HFS+/exFAT)
+._*
+._.git
+._.gitignore
+
+# PDF gerado localmente — não é artefato do pipeline
+pipeline_completo.pdf
+._pipeline_completo.pdf
