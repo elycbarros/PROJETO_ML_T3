@@ -379,10 +379,15 @@ projeto (notebooks/03_executar_pipeline.py e notebooks/pipeline_completo.ipynb).
 - Balanceamento por Random Over-Sampling (reamostragem com reposição da classe minoritária), estritamente no treino.
 - Mesmos índices balanceados para KNN e árvore.
 - Scaler nas contínuas, ajustado no treino balanceado, exclusivo do KNN.
+- Critério de seleção: F1 médio da classe 1 em 5 dobras. F1 funciona como proxy conservador
+  de custo assimétrico (FN > FP): equilibra precisão e recall sem exigir estimativas monetárias
+  hipotéticas; Recall_1 puro maximizaria a detecção de inadimplentes mas aceitaria qualquer
+  volume de FP. O veredito final usa FP/FN absolutos, onde a vantagem da árvore é explícita.
 - Seleção persistida antes do teste: {selection}.
 - Oito comparações de treino/teste; treino avaliado sem duplicações artificiais.
 - Importância extraída da árvore realmente avaliada.
 - Simulação financeira calculada a partir das contagens geradas, sem números fixados.
+- KNN executado com n_jobs=-1 (paralelismo de distâncias); determinístico dado os dados.
 - Este arquivo é regenerado a partir dos mesmos resultados a cada execução do pipeline.
 
 A limitação de dependência do teste histórico está detalhada na seção "Limitações" acima.
@@ -500,13 +505,21 @@ descritos e exibidos nos documentos indicados na tabela abaixo.
 
 ## Reprodução
 
-Ambiente da execução auditada: Python 3.14.6, com as versões de `requirements.txt`.
+Ambiente da execução auditada: Python 3.14.7, com as versões de `requirements.txt`.
 Na raiz do projeto, prepare o ambiente e abra o JupyterLab:
 
 ~~~sh
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install -r requirements.txt
+jupyter lab
+~~~
+
+Alternativamente, com `uv` (mais rápido):
+
+~~~sh
+uv venv .venv --python 3.14
+uv pip install -r requirements.txt
 jupyter lab
 ~~~
 
@@ -531,6 +544,20 @@ python3 notebooks/03_executar_pipeline.py
 python3 notebooks/04_analise_complementar.py   # opcional
 python3 -m unittest discover -s tests -v
 ~~~
+
+## Branches por fase (Git)
+
+O repositório usa branches separadas por etapa do projeto, todas integradas à `main`:
+
+| Branch | Fase | Último commit da fase |
+| --- | --- | --- |
+| `fase/eda` | Inspeção inicial e análise exploratória | `feat: adiciona graficos e interpretacao da eda` |
+| `fase/data-prep` | Limpeza, feature engineering, split estratificado, balanceamento | `feat: separa e prepara dados sem vazamento` |
+| `fase/modelagem` | KNN/Árvore, diagnóstico de overfitting, veredito de negócio | `feat: avalia modelos e registra veredito de negocio` |
+| `main` | Refinamentos finais, documentação e fixes | HEAD |
+
+Todos os commits seguem o padrão de Commits Semânticos (`feat:`, `fix:`, `docs:`, `refactor:`, `chore:`).
+
 
 ## Arquivos e leitura
 
