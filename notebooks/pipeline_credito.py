@@ -183,12 +183,15 @@ def prepare(Xtrain, ytrain, Xeval):
     }
     assert np.isfinite(balanced).all() and np.isfinite(evaluation).all()
     assert not set(Xtrain.index[balanced_indices]) & set(Xeval.index)
+    # evaluation_classes é preenchido com um placeholder vazio aqui porque prepare()
+    # não recebe yeval como argumento — o chamador (run_cv ou run_all) deve sobrescrever
+    # este campo com as contagens reais de yeval imediatamente após a chamada.
     audit = {
         "train": len(Xtrain), "evaluation": len(Xeval), "balanced": len(balanced),
         "retained_originals": len(np.unique(balanced_indices)),
         "overlap_source_rows": 0,
         "balanced_classes": pd.Series(balanced_y).value_counts().sort_index().to_dict(),
-        "evaluation_classes": ytrain.iloc[:0].value_counts().to_dict(),
+        "evaluation_classes": {},  # sobrescrito pelo chamador com as contagens reais de yeval
         "same_resampling_for_both_models": True,
         "scaler_fit_rows": int(scaler.n_samples_seen_),
         "scale_columns": CONTINUOUS,
@@ -202,7 +205,9 @@ def prepare(Xtrain, ytrain, Xeval):
 
 def classifier(kind, param):
     if kind == "KNN":
-        return KNeighborsClassifier(n_neighbors=param, weights="uniform", n_jobs=1)
+        # n_jobs=-1: usa todos os núcleos disponíveis para o cálculo de distâncias;
+        # não afeta reprodutibilidade porque KNN é determinístico dado os dados.
+        return KNeighborsClassifier(n_neighbors=param, weights="uniform", n_jobs=-1)
     return DecisionTreeClassifier(max_depth=param, random_state=SEED)
 
 
@@ -220,6 +225,19 @@ def param_text(param):
 
 
 def select_configs(rows):
+    """Seleciona o melhor hiperparâmetro de cada modelo por F1 médio da classe 1 nas dobras.
+
+    Justificativa do critério (F1 como proxy de custo assimétrico):
+    Embora o veredito de negócio considere FN mais caro que FP, a seleção usa F1_1
+    porque ele equilibra precisão e recall sem exigir estimativas monetárias — que são
+    hipotéticas e não vieram da base. Recall_1 puro maximizaria a detecção de inadimplentes
+    mas aceitaria qualquer volume de FP; F1_1 impõe um freio natural nessa troca. Como o
+    veredito final é baseado na contagem absoluta de FP e FN (não em F1), a seleção por F1
+    é conservadora e suficiente para identificar o modelo dominante.
+
+    Desempate: K maior suaviza o KNN (menos overfitting); profundidade menor simplifica a
+    árvore (princípio da navalha de Occam).
+    """
     selected = {}
     for kind in ("KNN", "Tree"):
         candidates = [r for r in rows if r["model"] == kind]
