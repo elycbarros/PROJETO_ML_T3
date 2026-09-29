@@ -103,10 +103,15 @@ projeto (notebooks/03_executar_pipeline.py e notebooks/pipeline_completo.ipynb).
 - Balanceamento por Random Over-Sampling (reamostragem com reposição da classe minoritária), estritamente no treino.
 - Mesmos índices balanceados para KNN e árvore.
 - Scaler nas contínuas, ajustado no treino balanceado, exclusivo do KNN.
+- Critério de seleção: F1 médio da classe 1 em 5 dobras. F1 funciona como proxy conservador
+  de custo assimétrico (FN > FP): equilibra precisão e recall sem exigir estimativas monetárias
+  hipotéticas; Recall_1 puro maximizaria a detecção de inadimplentes mas aceitaria qualquer
+  volume de FP. O veredito final usa FP/FN absolutos, onde a vantagem da árvore é explícita.
 - Seleção persistida antes do teste: {'KNN': '9', 'Tree': '7'}.
 - Oito comparações de treino/teste; treino avaliado sem duplicações artificiais.
 - Importância extraída da árvore realmente avaliada.
 - Simulação financeira calculada a partir das contagens geradas, sem números fixados.
+- KNN executado com n_jobs=-1 (paralelismo de distâncias); determinístico dado os dados.
 - Este arquivo é regenerado a partir dos mesmos resultados a cada execução do pipeline.
 
 A limitação de dependência do teste histórico está detalhada na seção "Limitações" acima.

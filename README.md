@@ -96,13 +96,21 @@ descritos e exibidos nos documentos indicados na tabela abaixo.
 
 ## Reprodução
 
-Ambiente da execução auditada: Python 3.14.6, com as versões de `requirements.txt`.
+Ambiente da execução auditada: Python 3.14.7, com as versões de `requirements.txt`.
 Na raiz do projeto, prepare o ambiente e abra o JupyterLab:
 
 ~~~sh
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install -r requirements.txt
+jupyter lab
+~~~
+
+Alternativamente, com `uv` (mais rápido):
+
+~~~sh
+uv venv .venv --python 3.14
+uv pip install -r requirements.txt
 jupyter lab
 ~~~
 
@@ -127,6 +135,20 @@ python3 notebooks/03_executar_pipeline.py
 python3 notebooks/04_analise_complementar.py   # opcional
 python3 -m unittest discover -s tests -v
 ~~~
+
+## Branches por fase (Git)
+
+O repositório usa branches separadas por etapa do projeto, todas integradas à `main`:
+
+| Branch | Fase | Último commit da fase |
+| --- | --- | --- |
+| `fase/eda` | Inspeção inicial e análise exploratória | `feat: adiciona graficos e interpretacao da eda` |
+| `fase/data-prep` | Limpeza, feature engineering, split estratificado, balanceamento | `feat: separa e prepara dados sem vazamento` |
+| `fase/modelagem` | KNN/Árvore, diagnóstico de overfitting, veredito de negócio | `feat: avalia modelos e registra veredito de negocio` |
+| `main` | Refinamentos finais, documentação e fixes | HEAD |
+
+Todos os commits seguem o padrão de Commits Semânticos (`feat:`, `fix:`, `docs:`, `refactor:`, `chore:`).
+
 
 ## Arquivos e leitura
 
