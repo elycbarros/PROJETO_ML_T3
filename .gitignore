@@ -13,3 +13,9 @@ __pycache__/
 # PDF gerado localmente — não é artefato do pipeline
 pipeline_completo.pdf
 ._pipeline_completo.pdf
+
+# Roteiro de apresentação em vídeo (privado)
+roteiro_video.md
+roteiro_*.md
+_privado/
+privado/
