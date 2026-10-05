@@ -96,7 +96,7 @@ descritos e exibidos nos documentos indicados na tabela abaixo.
 
 ## Reprodução
 
-Ambiente da execução auditada: Python 3.14.6 (versões registradas em `resultados/auditoria_execucao.json`).
+Ambiente da execução auditada: Python 3.14.7 (versões registradas em `resultados/auditoria_execucao.json`).
 Na raiz do projeto, prepare o ambiente e abra o JupyterLab:
 
 ~~~sh
