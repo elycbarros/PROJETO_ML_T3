@@ -19,3 +19,8 @@ roteiro_video.md
 roteiro_*.md
 _privado/
 privado/
+
+# Jupyter local configs and backups
+.jupyter/
+notebooks/.jupyter/
+*_backup.ipynb
